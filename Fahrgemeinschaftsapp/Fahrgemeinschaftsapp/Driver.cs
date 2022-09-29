@@ -6,7 +6,10 @@ using System.Threading.Tasks;
 
 namespace Fahrgemeinschaftsapp
 {
-    internal class Driver
+    public class Driver
     {
+        public int TotalSeats { get; set; }
+        public int FreeSeats { get; set; }
+        public DateTime TimeStart { get; set; }
     }
 }
