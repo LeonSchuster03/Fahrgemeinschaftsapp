@@ -15,12 +15,14 @@ namespace Fahrgemeinschaftsapp
         static void Main(string[] args)
         {
             List<User> user_list = new List<User>();
-            LogIn(user_list);
+            List<Driver> driver_list = new List<Driver>();
+            LogIn(user_list, driver_list);
+
             Console.ReadLine();
         
         }
 
-        public static void LogIn(List<User> user_list)
+        public static void LogIn(List<User> user_list, List<Driver> driver_list)
         {
             Console.WriteLine("Do you already have an account? (y/n)");
             string AccountYN = Console.ReadLine();
@@ -28,16 +30,16 @@ namespace Fahrgemeinschaftsapp
             {
                 Console.WriteLine("Please enter your username");
                 string username = Console.ReadLine();
-                string filepath = $@"C:\010Projects\019 Fahrgemeinschaft\Fahrgemeinschaftsapp\Userlist\\\\/{username}.csv\";
+
                 Console.WriteLine("klappt");
 
             }
             else
             {
-                Registration(user_list);
+                Registration(user_list, driver_list);
             }
         }
-        public static void Registration(List<User>user_list)  //Creating .csv File and setting username and password 
+        public static void Registration(List<User>user_list, List<Driver>driver_list)  //Creating .csv File and setting username and password 
         {
 
             
@@ -63,12 +65,12 @@ namespace Fahrgemeinschaftsapp
                 
 
             } while (true);
-                CollectUserInfo(username, user_list);
+                CollectUserInfo(username, user_list, driver_list);
               
 
         }     
 
-        public static void CollectUserInfo(string username, List<User> user_list) //Adding info to userspecific file
+        public static void CollectUserInfo(string username, List<User> user_list, List<Driver> driver_list) //Adding info to userspecific file
         {
             List<string> userinfo = new List<string>();
             
@@ -79,7 +81,7 @@ namespace Fahrgemeinschaftsapp
             string lastname = Console.ReadLine();
 
             Console.WriteLine("Please enter your age");
-            string agestring = Console.ReadLine();
+            int age = Convert.ToInt32(Console.ReadLine()) ;
 
             Console.WriteLine("Whats your gender (m/f/d)");
             string gender = Console.ReadLine();
@@ -94,29 +96,58 @@ namespace Fahrgemeinschaftsapp
 
             userinfo.Add(firstname);
             userinfo.Add(lastname);
-            userinfo.Add(agestring);
+            userinfo.Add(Convert.ToString(age));
             userinfo.Add(gender);
             userinfo.Add(startlocation);
             userinfo.Add(destination);
             userinfo.Add(hascarstring);
-
-            int age = Convert.ToInt32(agestring);
             bool hascar = false;
             if(hascarstring == "y")
             {
                 hascar = true;
+                Console.WriteLine("How many seats does your car have?");
+                string seatst = Console.ReadLine();
+
+                Console.WriteLine("How many seats are free?");
+                string seatsf = Console.ReadLine();
+
+                Console.WriteLine("What time do you want to start?");
+                DateTime starttime = Convert.ToDateTime(Console.ReadLine());
+
+                userinfo.Add(seatst);
+                userinfo.Add(seatsf);
+                userinfo.Add(starttime.ToShortTimeString());
+
+                var temp = username + ".driver";
+
+                driver_list.Add(new Driver(temp, firstname, lastname, age, gender, startlocation, destination, hascar, Convert.ToInt32(seatst), Convert.ToInt32(seatsf), starttime));
+                
             }
+
+
+                user_list.Add(new User(username, firstname, lastname, age, gender, startlocation, destination, hascar));
+
+            
 
             user_list.Add(new User(username, firstname, lastname, age, gender, startlocation, destination, hascar));
 
             using (StreamWriter writer = new StreamWriter($@"C:\010Projects\019 Fahrgemeinschaft\Fahrgemeinschaftsapp\Userlist\{username}.csv"))
             {
                 for (int i = 0; i < userinfo.Count; i++)
-
-                    writer.WriteLine(string.Join(";", userinfo[i]));
+                {
+                    writer.Write(string.Join(";", userinfo[i]));
+                    writer.Write(",");
+                }   
+                
             }
-
+            Console.WriteLine("Saved the information in our database");
+        }
+        public static void PrintUserInfo()
+        {
+            Console.WriteLine("Here are all the information we saved about you:");
+            //Console.WriteLine($"Username: {user_list.User}");
         }
     }
+
     
 }
