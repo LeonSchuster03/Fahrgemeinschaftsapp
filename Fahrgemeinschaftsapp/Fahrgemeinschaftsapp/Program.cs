@@ -17,30 +17,38 @@ namespace Fahrgemeinschaftsapp
         {
             List<User> user_list = new List<User>();
             List<Driver> driver_list = new List<Driver>();
-            Console.WriteLine("Welcome to the carpool app");
-            Console.WriteLine(" ");
-            string username = LogIn(user_list, driver_list);
-            bool loggedin = true;
-            do
+            while (true)
             {
-                switch (Menu())
+                Console.WriteLine("Welcome to the carpool app");
+                Console.WriteLine(" ");
+                string username = LogIn(user_list, driver_list);
+                bool loggedin = true;
+                do
                 {
-                    case "1": 
-                        break; //TODO
-                    case "2":
-                        break; //TODO
-                    case "3":
-                        PrintUserInfo();
-                        break;
-                    case "4":
-                        DeleteAccount(username);
-                        loggedin = false;
-                        break;
-                }
-            } while (loggedin == true);
-            Console.Clear();
-            Console.WriteLine("You got logged out, to log in again, please restart the app");
-            Console.ReadLine();
+                    switch (Menu())
+                    {
+                        case "1":
+                            break; //TODO
+                        case "2":
+                            break; //TODO
+                        case "3":
+                            PrintUserInfo();
+                            break;
+                        case "4":
+                            DeleteAccount(username);
+                            loggedin = false;
+                            break;
+                        case "5":
+                            loggedin = false;
+                            break;
+                    }
+                } while (loggedin == true);
+                Console.Clear();
+                Console.WriteLine("You got logged out");
+                
+                Thread.Sleep(1000);
+                Console.Clear();
+            }
 
         }
 
@@ -183,7 +191,10 @@ namespace Fahrgemeinschaftsapp
             Console.WriteLine("Here are all the information we saved about you:");
             //Console.WriteLine($"Username: {user_list.User}");
             Console.WriteLine("Test Test");
-            Console.WriteLine("[1] Go back to Menu");
+
+
+
+            Console.WriteLine("[1] Go back to menu");
             Console.ReadLine();
             
         }
@@ -199,6 +210,7 @@ namespace Fahrgemeinschaftsapp
             Console.WriteLine("[2] Look for a possible driver");
             Console.WriteLine("[3] List information about you");
             Console.WriteLine("[4] Delete your account");
+            Console.WriteLine("[5] Log out");
 
             string navigatemenu = Console.ReadLine();
 
@@ -213,14 +225,14 @@ namespace Fahrgemeinschaftsapp
             {
                 System.IO.File.Delete($@"C:\010Projects\019 Fahrgemeinschaft\Fahrgemeinschaftsapp\Userlist\{username}.csv");
                 Console.WriteLine("Your account got deleted");
-                Thread.Sleep(500);
+                Thread.Sleep(1500);
                
             }
             else
             {
                 Thread.Sleep(500);
                 Console.Clear();
-                Console.WriteLine("Redirecting to Menu ...");
+                Console.WriteLine("Redirecting to menu ...");
                 Thread.Sleep(500);
             }
             
