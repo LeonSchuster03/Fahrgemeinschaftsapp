@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Fahrgemeinschaftsapp
@@ -16,72 +17,100 @@ namespace Fahrgemeinschaftsapp
         {
             List<User> user_list = new List<User>();
             List<Driver> driver_list = new List<Driver>();
-            LogIn(user_list, driver_list);
-
+            Console.WriteLine("Welcome to the carpool app");
+            Console.WriteLine(" ");
+            string username = LogIn(user_list, driver_list);
+            bool loggedin = true;
+            do
+            {
+                switch (Menu())
+                {
+                    case "1": 
+                        break; //TODO
+                    case "2":
+                        break; //TODO
+                    case "3":
+                        PrintUserInfo();
+                        break;
+                    case "4":
+                        DeleteAccount(username);
+                        loggedin = false;
+                        break;
+                }
+            } while (loggedin == true);
+            Console.Clear();
+            Console.WriteLine("You got logged out, to log in again, please restart the app");
             Console.ReadLine();
-        
+
         }
 
-        public static void LogIn(List<User> user_list, List<Driver> driver_list)
+        public static string LogIn(List<User> user_list, List<Driver> driver_list)
         {
+            
             Console.WriteLine("Do you already have an account? (y/n)");
             string AccountYN = Console.ReadLine();
-            if(AccountYN == "y")
+            string username = "";
+            Console.Clear();
+            if (AccountYN == "y")
             {
                 Console.WriteLine("Please enter your username");
-                string username = Console.ReadLine();
-
-                Console.WriteLine("klappt");
-
+                username = Console.ReadLine();
+                FileInfo fi = new FileInfo($@"C:\010Projects\019 Fahrgemeinschaft\Fahrgemeinschaftsapp\Userlist\\\\/{username}.csv\");
+                if (fi.Exists)
+                {
+                    Console.WriteLine("klappt");
+                }
             }
             else
             {
                 Registration(user_list, driver_list);
             }
+            return username;
+            
         }
-        public static void Registration(List<User>user_list, List<Driver>driver_list)  //Creating .csv File and setting username and password 
+        public static void Registration(List<User> user_list, List<Driver> driver_list)  //Creating .csv File and setting username and password 
         {
 
-            
-            
-                Console.WriteLine("What should be your username?");
-                string username = Console.ReadLine();
-                
-                do
-                {
+
+
+            Console.WriteLine("What should be your username?");
+            string username = Console.ReadLine();
+
+            do
+            {
                 FileInfo fi = new FileInfo($@"C:\010Projects\019 Fahrgemeinschaft\Fahrgemeinschaftsapp\Userlist\\\\/{username}.csv\");
                 if (!fi.Exists)
-                    {
+                {
                     using (File.Create(username))
                         Console.WriteLine($"Your username is now {username}");
                     break;
-                    }
-                    else
-                    {
-                        Console.WriteLine("This username already exists, please choose another");
-                        Console.WriteLine(fi);
-                        username = Console.ReadLine();
-                    }
-                
+                }
+                else
+                {
+                    Console.WriteLine("This username already exists, please choose another");
+                    
+                    username = Console.ReadLine();
+                }
+
 
             } while (true);
-                CollectUserInfo(username, user_list, driver_list);
-              
+            CollectUserInfo(username, user_list, driver_list);
 
-        }     
+
+        }
 
         public static void CollectUserInfo(string username, List<User> user_list, List<Driver> driver_list) //Adding info to userspecific file
         {
             List<string> userinfo = new List<string>();
-            
+
             Console.WriteLine("Whats your first name?");
             string firstname = Console.ReadLine();
-            
+
             Console.WriteLine("Whats your last name?");
             string lastname = Console.ReadLine();
 
             Console.WriteLine("Please enter your age");
-            int age = Convert.ToInt32(Console.ReadLine()) ;
+            int age = Convert.ToInt32(Console.ReadLine());
 
             Console.WriteLine("Whats your gender (m/f/d)");
             string gender = Console.ReadLine();
@@ -102,7 +131,7 @@ namespace Fahrgemeinschaftsapp
             userinfo.Add(destination);
             userinfo.Add(hascarstring);
             bool hascar = false;
-            if(hascarstring == "y")
+            if (hascarstring == "y")
             {
                 hascar = true;
                 Console.WriteLine("How many seats does your car have?");
@@ -121,13 +150,13 @@ namespace Fahrgemeinschaftsapp
                 var temp = username + ".driver";
 
                 driver_list.Add(new Driver(temp, firstname, lastname, age, gender, startlocation, destination, hascar, Convert.ToInt32(seatst), Convert.ToInt32(seatsf), starttime));
-                
+
             }
 
 
-                user_list.Add(new User(username, firstname, lastname, age, gender, startlocation, destination, hascar));
+            user_list.Add(new User(username, firstname, lastname, age, gender, startlocation, destination, hascar));
 
-            
+
 
             user_list.Add(new User(username, firstname, lastname, age, gender, startlocation, destination, hascar));
 
@@ -137,17 +166,66 @@ namespace Fahrgemeinschaftsapp
                 {
                     writer.Write(string.Join(";", userinfo[i]));
                     writer.Write(",");
-                }   
-                
+                }
+
             }
+
             Console.WriteLine("Saved the information in our database");
+            Thread.Sleep(500);
+            Console.Clear();
+            Console.WriteLine("Redirecting to Menu ...");
+            Thread.Sleep(500);
+            
         }
         public static void PrintUserInfo()
         {
+            Console.Clear();
             Console.WriteLine("Here are all the information we saved about you:");
             //Console.WriteLine($"Username: {user_list.User}");
+            Console.WriteLine("Test Test");
+            Console.WriteLine("[1] Go back to Menu");
+            Console.ReadLine();
+            
+        }
+    
+        public static string Menu()
+        {
+            Console.Clear();
+            Console.WriteLine($"Welcome ");
+            Console.WriteLine(" ");
+            Console.WriteLine("Please choose, what you want to do:");
+            Console.WriteLine(" ");
+            Console.WriteLine("[1] Look for possible passengers");
+            Console.WriteLine("[2] Look for a possible driver");
+            Console.WriteLine("[3] List information about you");
+            Console.WriteLine("[4] Delete your account");
+
+            string navigatemenu = Console.ReadLine();
+
+            return navigatemenu;
+
+        }
+        public static void DeleteAccount(string username)
+        {
+            Console.WriteLine("Do you really want to delete your account? (y/n)");
+            string confirmation = Console.ReadLine();
+            if(confirmation == "y")
+            {
+                System.IO.File.Delete($@"C:\010Projects\019 Fahrgemeinschaft\Fahrgemeinschaftsapp\Userlist\{username}.csv");
+                Console.WriteLine("Your account got deleted");
+                Thread.Sleep(500);
+               
+            }
+            else
+            {
+                Thread.Sleep(500);
+                Console.Clear();
+                Console.WriteLine("Redirecting to Menu ...");
+                Thread.Sleep(500);
+            }
+            
+            
         }
     }
 
-    
 }
