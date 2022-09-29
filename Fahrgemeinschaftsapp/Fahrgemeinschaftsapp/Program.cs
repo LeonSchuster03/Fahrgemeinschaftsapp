@@ -28,15 +28,15 @@ namespace Fahrgemeinschaftsapp
                     switch (Menu())
                     {
                         case "1":
-                            break; //TODO
+                            break; //TODO List passengers
                         case "2":
-                            break; //TODO
+                            break; //TODO List drivers
                         case "3":
-                            PrintUserInfo();
+                            PrintUserInfo(username); //TODO make returned list look cleaner
                             break;
                         case "4":
-                            DeleteAccount(username);
-                            loggedin = false;
+                            loggedin = DeleteAccount(username);
+                            
                             break;
                         case "5":
                             loggedin = false;
@@ -44,14 +44,16 @@ namespace Fahrgemeinschaftsapp
                     }
                 } while (loggedin == true);
                 Console.Clear();
-                Console.WriteLine("You got logged out");
-                
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("Logging out ...");
+                Console.ForegroundColor = ConsoleColor.White;
+
                 Thread.Sleep(1000);
                 Console.Clear();
             }
 
         }
-
+        
         public static string LogIn(List<User> user_list, List<Driver> driver_list)
         {
             
@@ -67,6 +69,13 @@ namespace Fahrgemeinschaftsapp
                 if (fi.Exists)
                 {
                     Console.WriteLine("klappt");
+                }
+                else
+                {
+                    Console.WriteLine("This user doesnt exist. You get redirected to Registration");
+                    Thread.Sleep(1000);
+                    Console.Clear();
+                    Registration(user_list, driver_list);
                 }
             }
             else
@@ -185,15 +194,19 @@ namespace Fahrgemeinschaftsapp
             Thread.Sleep(500);
             
         }
-        public static void PrintUserInfo()
+        public static void PrintUserInfo(string username)
         {
             Console.Clear();
             Console.WriteLine("Here are all the information we saved about you:");
+            Console.WriteLine("------------------------------------------------- ");
+            //Console.WriteLine("Username, first name, last name, age, gender, StartLocation, EndLocation, is driver?");
+            
+            using (StreamReader sr = new StreamReader($@"C:\010Projects\019 Fahrgemeinschaft\Fahrgemeinschaftsapp\Userlist\{username}.csv"))
+                Console.WriteLine(sr.ReadLine());
             //Console.WriteLine($"Username: {user_list.User}");
-            Console.WriteLine("Test Test");
 
 
-
+            Console.WriteLine("------------------------------------------------- ");
             Console.WriteLine("[1] Go back to menu");
             Console.ReadLine();
             
@@ -203,12 +216,13 @@ namespace Fahrgemeinschaftsapp
         {
             Console.Clear();
             Console.WriteLine($"Welcome ");
-            Console.WriteLine(" ");
+            Console.WriteLine("--------------------------------------------------- ");
             Console.WriteLine("Please choose, what you want to do:");
-            Console.WriteLine(" ");
+            Console.WriteLine("--------------------------------------------------- ");
             Console.WriteLine("[1] Look for possible passengers");
             Console.WriteLine("[2] Look for a possible driver");
             Console.WriteLine("[3] List information about you");
+            Console.WriteLine("--------------------------------------------------- ");
             Console.WriteLine("[4] Delete your account");
             Console.WriteLine("[5] Log out");
 
@@ -217,23 +231,31 @@ namespace Fahrgemeinschaftsapp
             return navigatemenu;
 
         }
-        public static void DeleteAccount(string username)
+        public static bool DeleteAccount(string username)
         {
+            bool loggenin = true;
+            Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine("Do you really want to delete your account? (y/n)");
             string confirmation = Console.ReadLine();
             if(confirmation == "y")
             {
-                System.IO.File.Delete($@"C:\010Projects\019 Fahrgemeinschaft\Fahrgemeinschaftsapp\Userlist\{username}.csv");
+                File.Delete($@"C:\010Projects\019 Fahrgemeinschaft\Fahrgemeinschaftsapp\Userlist\{username}.csv");
+                Console.Clear();
                 Console.WriteLine("Your account got deleted");
+                Console.ForegroundColor = ConsoleColor.White;
                 Thread.Sleep(1500);
-               
+                loggenin = false;
+                return loggenin;
+
+
             }
             else
             {
-                Thread.Sleep(500);
                 Console.Clear();
+                Console.ForegroundColor = ConsoleColor.White;
                 Console.WriteLine("Redirecting to menu ...");
                 Thread.Sleep(500);
+                return loggenin;
             }
             
             
