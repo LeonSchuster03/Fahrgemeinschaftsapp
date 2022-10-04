@@ -26,6 +26,7 @@ namespace Fahrgemeinschaftsapp
             List<Carpool> carpool_list = new List<Carpool>();
             while (true)
             {
+                
                 Console.WriteLine("Welcome to the carpool app"); 
                 Console.WriteLine(" ");
                 string username = LogIn(user_list, driver_list); //TODO implement password into login-process
@@ -33,10 +34,11 @@ namespace Fahrgemeinschaftsapp
 
                 do
                 {
+                   
                     switch (Menu(username))
                     {
                         case "1":
-                            PrintUserInfo(username); //TODO make returned list look cleaner + make Info editable
+                            PrintUserInfo(username, user_list, driver_list); //TODO make returned list look cleaner + make Info editable
                             break;
                         case "2":
                             
@@ -77,7 +79,7 @@ namespace Fahrgemeinschaftsapp
         Home:
             Console.WriteLine("Do you already have an account? (y/n)");
             string AccountYN = Console.ReadLine();
-            string username = "";
+            string username = string.Empty;
             Console.Clear();
             if (AccountYN == "y")
             {
@@ -190,7 +192,11 @@ namespace Fahrgemeinschaftsapp
                         writer.Write(",");
                     }
                 }
-            }            
+            }
+            else if(hascarstring == "n")
+            {
+                File.Delete($@"C:\010Projects\019 Fahrgemeinschaft\Fahrgemeinschaftsapp\Driverlist\{username}.csv");
+            }
             user_list.Add(new User(username, firstname, lastname, age, gender, startlocation, destination, hascar));
 
             Console.WriteLine(" ");  
@@ -253,7 +259,7 @@ namespace Fahrgemeinschaftsapp
             Console.WriteLine("[1] Go back to menu");
             Console.ReadLine();
         }
-        public static void PrintUserInfo(string username)
+        public static void PrintUserInfo(string username, List<User> user_list, List<Driver> driver_list)
         {
             Console.Clear();
             Console.WriteLine("Here are all the information we saved about you:");
@@ -270,8 +276,19 @@ namespace Fahrgemeinschaftsapp
                     Console.WriteLine(sr.ReadLine());
             }
             Console.WriteLine("------------------------------------------------- ");
-            Console.WriteLine("[1] Go back to menu");
-            Console.ReadLine();           
+            Console.WriteLine("[1] Edit the Information");
+            Console.WriteLine("[2] Go back to menu");
+            string input = Console.ReadLine();
+            if(input == "1")
+            {
+                CollectUserInfo(username, user_list, driver_list);
+            }
+            else
+            {
+                Console.Clear();
+                Console.WriteLine("Redireting to menu ...");
+                Thread.Sleep(1000);
+            }
         }
         public static void CreateCarpool(List<Carpool> carpool, string username)
         {
@@ -409,6 +426,7 @@ namespace Fahrgemeinschaftsapp
                     else
                     {
                         Console.WriteLine("No carpool got deleted");
+                        Console.WriteLine(" ");
                         Console.WriteLine("Redirecting to menu ...");
                         Thread.Sleep(2000);
                     }
@@ -416,6 +434,7 @@ namespace Fahrgemeinschaftsapp
                 else
                 {
                     Console.WriteLine($"You're not a part of the carpool with the ID {cp_id}");
+                    Console.WriteLine(" ");
                     Console.WriteLine("Redirecting to menu ...");
                     Thread.Sleep(2000);
                 }
@@ -450,7 +469,6 @@ namespace Fahrgemeinschaftsapp
                     {
                         Content = reader.ReadToEnd();
                     }
-
                     if (Content.Contains($",{username},"))
                     {
                         File.Delete($@"C:\010Projects\019 Fahrgemeinschaft\Fahrgemeinschaftsapp\Carpools\{file}");
