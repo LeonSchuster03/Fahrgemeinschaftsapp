@@ -2,12 +2,14 @@
 using DocumentFormat.OpenXml.Drawing.Charts;
 using DocumentFormat.OpenXml.Math;
 using DocumentFormat.OpenXml.Spreadsheet;
+using DocumentFormat.OpenXml.Wordprocessing;
 using Microsoft.SqlServer.Server;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -31,7 +33,7 @@ namespace Fahrgemeinschaftsapp
             {                
                 Console.WriteLine("Welcome to the carpool app"); 
                 Console.WriteLine(" ");
-                string username = LogIn(user_list, driver_list); //TODO implement password into login-process
+                string username = LogIn(user_list, driver_list); //TODO fix password error (csv files XYZ)
                 bool loggedin = true;
 
                 do
@@ -60,9 +62,12 @@ namespace Fahrgemeinschaftsapp
                             DeleteCarpool(username);
                             break;
                         case "7":
-                            loggedin = DeleteAccount(username);
+                            ChangeUserPassword(username);
                             break;
                         case "8":
+                            loggedin = DeleteAccount(username);
+                            break;
+                        case "9":
                             loggedin = false;
                             break;
                     }
@@ -84,12 +89,32 @@ namespace Fahrgemeinschaftsapp
             Console.Clear();
             if (AccountYN == "y")
             {
+                LoggingIn:
                 Console.WriteLine("Please enter your username");
                 username = Console.ReadLine();
                 FileInfo fi = new FileInfo($@"C:\010Projects\019 Fahrgemeinschaft\Fahrgemeinschaftsapp\Userlist\\\\/{username}.csv\");
                 if (fi.Exists)
                 {
-                    Console.WriteLine("klappt");
+                    Console.WriteLine("Please enter your password");
+                    string user_pw = Console.ReadLine();
+                    using (StreamReader sr = new StreamReader(Path.Combine($@"C:\010Projects\019 Fahrgemeinschaft\Fahrgemeinschaftsapp\Userlist\\\\{username}.csv")))
+                    {
+                        string[] values = new string[7];
+                        var line = sr.ReadLine();
+                        values = line.Split(';');
+
+                        if (values[7] == user_pw)
+                        {
+
+                        }
+                        else
+                        {
+                            Console.WriteLine("Username or password is incorrect. Please the again!");
+                            Thread.Sleep(1500);
+                            Console.Clear();
+                            goto LoggingIn;
+                        }
+                    }
                 }
                 else
                 {
@@ -123,6 +148,23 @@ namespace Fahrgemeinschaftsapp
                 {
                     using (File.Create(username))
                         Console.WriteLine($"Your username is now {username}");
+                    Console.WriteLine("Choose a password");
+                    string pw = Console.ReadLine();
+                    Console.WriteLine("Confirm the password");
+                    string pw_confirm = Console.ReadLine();
+                    do
+                    {
+                        if (pw == pw_confirm)
+                        {
+                            using (StreamWriter writer = new StreamWriter($@"C:\010Projects\019 Fahrgemeinschaft\Fahrgemeinschaftsapp\Userlist\{username}.csv"))
+                                writer.WriteLine(pw);
+                                break;
+                        }
+                        else
+                        {
+                            Console.WriteLine("The passwords dont match. Please try again!");
+                        }
+                    } while (true);
                     break;
                 }
                 else
@@ -158,10 +200,15 @@ namespace Fahrgemeinschaftsapp
             userinfo.Add(Convert.ToString(age));
             userinfo.Add(gender);
             userinfo.Add  (startlocation); 
-            userinfo.Add(destination);          
+            userinfo.Add(destination);
+            string pw = string.Empty;
+            using(StreamReader reader = new StreamReader($@"C:\010Projects\019 Fahrgemeinschaft\Fahrgemeinschaftsapp\Userlist\{username}.csv"))
+            {
+                pw = reader.ReadLine();
+            }
             using (StreamWriter writer = new StreamWriter($@"C:\010Projects\019 Fahrgemeinschaft\Fahrgemeinschaftsapp\Userlist\{username}.csv"))
             {
-                var newLine = $"{username};{firstname};{lastname};{Convert.ToString(age)};{gender};{startlocation};{destination}";
+                var newLine = $"{username};{firstname};{lastname};{Convert.ToString(age)};{gender};{startlocation};{destination};{pw}; XYZ";
                 writer.WriteLine(newLine);
             }
             bool hascar = false;
@@ -204,6 +251,7 @@ namespace Fahrgemeinschaftsapp
             Console.WriteLine("Redirecting to Menu ...");
             Thread.Sleep(500);            
         }
+        
         public static string Menu(string username)
         {
             Console.Clear();
@@ -219,11 +267,68 @@ namespace Fahrgemeinschaftsapp
             Console.WriteLine("[5] View your carpools");
             Console.WriteLine("[6] Delete a carpool");
             Console.WriteLine("--------------------------------------------------- ");
-            Console.WriteLine("[7] Delete your account");
-            Console.WriteLine("[8] Log out");
+            Console.WriteLine("[7] Change password");
+            Console.WriteLine("[8] Delete your account");
+            Console.WriteLine("[9] Log out");
 
             string navigatemenu = Console.ReadLine();
             return navigatemenu;
+        }
+
+        public static void ChangeUserPassword(string username)
+        {
+        ChangePW:
+
+            Console.Clear();
+            Console.WriteLine("Please enter your old password");
+            string input_pw = Console.ReadLine();
+            //string path = $@"C:\010Projects\019 Fahrgemeinschaft\Fahrgemeinschaftsapp\Userlist\{username}.csv";
+            string user_pw = string.Empty;
+            var filetext = File.ReadAllText($@"C:\010Projects\019 Fahrgemeinschaft\Fahrgemeinschaftsapp\Userlist\{username}.csv");
+            string[] values = filetext.Split(';');
+            user_pw = values[7];
+            user_pw = user_pw.Replace("\r\n", string.Empty);
+
+
+
+
+            if (input_pw == user_pw)
+                {
+                    
+                    Console.WriteLine("Please enter your new password");
+                    string new_pw = Console.ReadLine();
+                    Console.WriteLine("Please confirm your new password");
+                    string confirm_new_pw = Console.ReadLine();
+                    if (confirm_new_pw == new_pw)
+                    {
+                        values[7] = new_pw;
+
+                        using (StreamWriter writer = new StreamWriter($@"C:\010Projects\019 Fahrgemeinschaft\Fahrgemeinschaftsapp\Userlist\{username}.csv"))
+                        {
+                            writer.WriteLine($"{values[0]};{values[1]};{values[2]};{values[3]};{values[4]};{values[5]};{values[6]};{values[7]}");
+                        }
+                        Console.Clear();
+                        Console.WriteLine("Your password got changed");
+                        Console.WriteLine("Redirecting to menu ...");
+                        Thread.Sleep(2000);
+                    }
+                    else
+                    {
+                        Console.WriteLine("The passwords dont match. Please try again!");
+                        Thread.Sleep(1500);
+                        Console.Clear();
+                        goto ChangePW;
+                    }
+
+                }
+                else if (input_pw != user_pw)
+                {
+                    Console.WriteLine("The password was incorrect, please try again");
+                    Thread.Sleep(1500);
+                    Console.Clear();
+                    goto ChangePW;
+
+                }            
         }
         public static void PrintAllUsers()
         {
@@ -231,12 +336,12 @@ namespace Fahrgemeinschaftsapp
             Console.WriteLine("Here are all users, who are currently looking for a carpool");
             Console.WriteLine("------------------------------------------------- ");
 
-            string[] userinfo = new string[7];
+            string[] userinfo = new string[8];
             foreach (string file in Directory.EnumerateFiles($@"C:\010Projects\019 Fahrgemeinschaft\Fahrgemeinschaftsapp\Userlist\\\\"))
             {               
                 using (var reader = new StreamReader(file))
                 {
-                    string[] values = new string[7];
+                    string[] values = new string[8];
                     var line = reader.ReadLine();
                     values = line.Split(';');
                     userinfo = values;
@@ -291,11 +396,16 @@ namespace Fahrgemeinschaftsapp
             }
             Console.WriteLine("------------------------------------------------- ");
             Console.WriteLine("[1] Edit the Information");
-            Console.WriteLine("[2] Go back to menu");
+            Console.WriteLine("[2] Change your password");
+            Console.WriteLine("[3] Go back to menu");
             string input = Console.ReadLine();
             if(input == "1")
             {
                 CollectUserInfo(username, user_list, driver_list);
+            }
+            else if(input == "2")
+            {
+                ChangeUserPassword(username);  
             }
             else
             {
@@ -337,7 +447,7 @@ namespace Fahrgemeinschaftsapp
             
             File.Create(Convert.ToString(carpoolID));
             List<string> passengers = new List<string>();
-            for(int j = 1; j < passengercount; j++) 
+            for(int j = 1; j < passengercount-1; j++) 
             {
                 Console.WriteLine("");
                 Console.WriteLine($"Please give us the username of the {j}. passenger");
@@ -377,7 +487,7 @@ namespace Fahrgemeinschaftsapp
             Console.WriteLine(" ");
             Console.WriteLine("[1] View your carpools");
 
-            Console.WriteLine("[3] Go back to menu");
+            Console.WriteLine("[2] Go back to menu");
             string input = Console.ReadLine();
             if (input == "1")
             {
@@ -402,7 +512,7 @@ namespace Fahrgemeinschaftsapp
                     Content = reader.ReadToEnd();
                 }
 
-                    if (Content.Contains($",{username},"))
+                    if (Content.Contains($"{username},"))
                     {
                         using (StreamReader sr = new StreamReader($@"C:\010Projects\019 Fahrgemeinschaft\Fahrgemeinschaftsapp\Carpools\{file}"))
                         {
