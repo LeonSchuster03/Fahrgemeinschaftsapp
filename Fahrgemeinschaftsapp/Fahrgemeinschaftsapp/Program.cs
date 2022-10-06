@@ -41,18 +41,18 @@ namespace Fahrgemeinschaftsapp
                     switch (Menu(username))
                     {
                         case "1":
-                            PrintUserInfo(username, driver_list);
+                            PrintUserInfo(username, driver_list); //TODO fix collecting drivers info
                             break;
                         case "2":
 
-                            PrintAllUsers();
+                            PrintAllUsers(); //TODO add searchoption for destination  
                             break;
                         case "3":
                             PrintAllDrivers();
                             break;
 
                         case "4":
-                            CreateCarpool(carpool_list, username);
+                            CreateCarpool(carpool_list, username); //TODO fix collecting carpool into
                             break;
                         case "5":
                             ViewYourCarpools(carpool_list, username); //TODO make returned list look cleaner
@@ -61,7 +61,7 @@ namespace Fahrgemeinschaftsapp
                             DeleteCarpool(username);
                             break;
                         case "7":
-                            ChangeUserPassword(username);
+                            ChangeUserPassword(username); //TODO fix display of censored password
                             break;
                         case "8":
                             loggedin = DeleteAccount(username);
@@ -518,7 +518,7 @@ namespace Fahrgemeinschaftsapp
                     using (StreamReader sr = new StreamReader($@"C:\010Projects\019 Fahrgemeinschaft\Fahrgemeinschaftsapp\Carpools\{file}"))
                     {
                         Console.WriteLine($"The Carpool with the ID {values[0].Trim(',')} will start at {values[3]} in {values[1]}");
-                        Console.WriteLine($"The destination is {values[2]}");
+                        Console.WriteLine($"It's destination is {values[2]}");
                         Console.WriteLine("The passengers are:");
                         for(int i = 4; i < values.Length; i++)
                         {
@@ -776,25 +776,29 @@ namespace Fahrgemeinschaftsapp
         }
         public static string HidePassword() //replaces the input of passwords with '*'
         {
-            string user_pw = null;
+            StringBuilder sb = new StringBuilder();
             while (true)
             {
                 var key = Console.ReadKey(true);
                 if (key.Key == ConsoleKey.Enter)
                     break;
                 
-                if(key.Key != ConsoleKey.Backspace)
+               
+                if(key.Key == ConsoleKey.Backspace)
                 {
-                    Console.Write("*");
-                    user_pw += key.KeyChar;
+                    if(sb.Length > 0)
+                    {
+                        sb.Length--;
+                        Console.Write("\b\0\b");
+                    }
+                    
+                    continue;
                 }
-                else
-                {
-                    user_pw = null;                    
-                }                   
+                Console.Write("*");
+                sb.Append(key.KeyChar);
             }
             Console.WriteLine(" ");
-            return user_pw;
+            return sb.ToString();
         }
     }   
 }
