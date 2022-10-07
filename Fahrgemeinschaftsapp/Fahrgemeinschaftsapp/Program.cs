@@ -45,10 +45,10 @@ namespace Fahrgemeinschaftsapp
                             break;
                         case "2":
 
-                            PrintAllUsers(); //TODO add searchoption for destination  
+                            PrintAllUsers(username); 
                             break;
                         case "3":
-                            PrintAllDrivers();
+                            PrintAllDrivers(username);
                             break;
                         case "4":
                             CreateCarpool(carpool_list, username); //TODO fix collecting carpool info
@@ -328,48 +328,117 @@ namespace Fahrgemeinschaftsapp
             }
         }
 
-        public static void PrintAllUsers() //all registered users are shown in a list
+        public static void PrintAllUsers(string username) //all registered users are shown in a list
         {
             Console.Clear();
-            Console.WriteLine("Here are all users, who are currently looking for a carpool");
-            Console.WriteLine("------------------------------------------------- ");
-
-            foreach (string file in Directory.EnumerateFiles($@"C:\010Projects\019 Fahrgemeinschaft\Fahrgemeinschaftsapp\Userlist\\\\"))
+            Console.WriteLine("[1] Show all users");
+            Console.WriteLine("[2] Only show users with the same destination");
+            string input = Console.ReadLine();
+            
+            if(input == "1")
             {
-                using (var reader = new StreamReader(file))
+                Console.Clear();
+                Console.WriteLine("Here are all users, who are currently looking for a carpool");
+                Console.WriteLine("------------------------------------------------- ");
+
+                foreach (string file in Directory.EnumerateFiles($@"C:\010Projects\019 Fahrgemeinschaft\Fahrgemeinschaftsapp\Userlist\\\\"))
                 {
-                    string[] values = new string[8];
-                    var line = reader.ReadLine();
-                    values = line.Split(';');
-                    Console.WriteLine($"{values[1]} ({values[4]}/{values[3]}), Start: {values[5]}, Destination: {values[6]}");
+                    using (var reader = new StreamReader(file))
+                    {
+                        string[] values = new string[8];
+                        var line = reader.ReadLine();
+                        values = line.Split(';');
+                        Console.WriteLine($"{values[1]} ({values[4]}/{values[3]}), Start: {values[5]}, Destination: {values[6]}");
+                    }
+                }                
+            }
+            else if(input == "2")
+            {
+                string text = File.ReadAllText($@"C:\010Projects\019 Fahrgemeinschaft\Fahrgemeinschaftsapp\Userlist\{username}.csv");
+                string[] info = text.Split(';');
+                Console.Clear();
+                Console.WriteLine($"Here are all users, who have {info[6]} as destination");
+                Console.WriteLine("------------------------------------------------- ");
+                
+
+                foreach (string file in Directory.EnumerateFiles($@"C:\010Projects\019 Fahrgemeinschaft\Fahrgemeinschaftsapp\Userlist\\\\"))
+                {
+                    using (var reader = new StreamReader(file))
+                    {
+                        string[] values = new string[8];
+                        var line = reader.ReadLine();
+                        values = line.Split(';');
+                        if ((info[6] == values[6]) && (info[0] != values[0]))
+                        {
+                            Console.WriteLine($"{values[1]} ({values[4]}/{values[3]}), Start: {values[5]}, Destination: {values[6]}");
+                        }
+                        
+                    }
                 }
             }
             Console.WriteLine("------------------------------------------------- ");
             Console.WriteLine("[1] Go back to menu");
             Console.ReadLine();
+
         }
 
-        public static void PrintAllDrivers() //all registered users, who are allowed to drive are shown in a list
-        {
+        public static void PrintAllDrivers(string username) //all registered users, who are allowed to drive are shown in a list
+        {           
             Console.Clear();
-            Console.WriteLine("Here are all users, who are currently looking for a carpool and are able to drive");
-            Console.WriteLine("------------------------------------------------- ");
-            foreach (string driverfile in Directory.EnumerateFiles($@"C:\010Projects\019 Fahrgemeinschaft\Fahrgemeinschaftsapp\Driverlist\\\\"))
+            Console.WriteLine("[1] Show all drivers");
+            Console.WriteLine("[2] Only show drivers with the same destination");
+            string input = Console.ReadLine();
+
+            if (input == "1")
             {
-                string userfilename = Path.GetFileName(driverfile);
-                using (StreamReader sr = new StreamReader(Path.Combine($@"C:\010Projects\019 Fahrgemeinschaft\Fahrgemeinschaftsapp\Userlist\\\\", userfilename)))
+                Console.Clear();
+                Console.WriteLine("Here are all drivers, who are currently looking for a carpool");
+                Console.WriteLine("------------------------------------------------- ");
+                foreach (string fileuser in Directory.EnumerateFiles($@"C:\010Projects\019 Fahrgemeinschaft\Fahrgemeinschaftsapp\Userlist\\\\"))
                 {
-                    string[] userinfo = new string[7];
-                    string[] values = new string[7];
-                    var line = sr.ReadLine();
-                    values = line.Split(';');
-                    userinfo = values;
-                    Console.WriteLine($"{userinfo[1]} ({userinfo[4]}/{userinfo[3]}), Start: {userinfo[5]}, Destination: {userinfo[6]} ");
+                    string filedriver = fileuser.Replace("Userlist", "Driverlist");
+                    FileInfo f1 = new FileInfo(filedriver);
+                    if (f1.Exists)
+                    {
+                        using (var reader = new StreamReader(fileuser))
+                        {
+                            string[] values = new string[8];
+                            var line = reader.ReadLine();
+                            values = line.Split(';');
+                            Console.WriteLine($"{values[1]} ({values[4]}/{values[3]}), Start: {values[5]}, Destination: {values[6]}");
+                        }
+                    }                    
+                }
+            }
+            else if (input == "2")
+            {
+                string text = File.ReadAllText($@"C:\010Projects\019 Fahrgemeinschaft\Fahrgemeinschaftsapp\Userlist\{username}.csv");
+                string[] info = text.Split(';');
+                Console.Clear();
+                Console.WriteLine($"Here are all drivers, who have {info[6]} as destination");
+                Console.WriteLine("------------------------------------------------- ");
+                foreach (string fileuser in Directory.EnumerateFiles($@"C:\010Projects\019 Fahrgemeinschaft\Fahrgemeinschaftsapp\Userlist\\\\"))
+                {
+                    string filedriver = fileuser.Replace("Userlist", "Driverlist");
+                    FileInfo f1 = new FileInfo(filedriver);
+                    if (f1.Exists)
+                    {
+                        using (var reader = new StreamReader(fileuser))
+                        {
+                            string[] values = new string[8];
+                            var line = reader.ReadLine();
+                            values = line.Split(';');
+                            if ((info[6] == values[6]) && (info[0] != values[0]))
+                            {
+                                Console.WriteLine($"{values[1]} ({values[4]}/{values[3]}), Start: {values[5]}, Destination: {values[6]}");
+                            }
+                        }
+                    }
                 }
             }
             Console.WriteLine("------------------------------------------------- ");
             Console.WriteLine("[1] Go back to menu");
-            Console.ReadLine();
+            Console.ReadLine();           
         }
 
         public static void PrintUserInfo(string username, List<Driver> driver_list) //all the information about the user is shown in a list
@@ -637,12 +706,16 @@ namespace Fahrgemeinschaftsapp
                         for(int i = 5; i < values.Length; i++)
                         {
                             values[i] = values[i].Trim(',');
-                            
+                            if (values[i] == username)
+                            {
+                                values[i] = "You";
+                            }
                             Console.WriteLine(values[i]);
                         }
                     }
                 }
             }
+            Console.WriteLine("");
             Console.WriteLine("------------------------------------------------- ");
             Console.WriteLine("[1] Create a carpool");
             Console.WriteLine("[2] Join a carpool");
