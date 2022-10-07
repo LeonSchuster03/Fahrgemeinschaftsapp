@@ -272,7 +272,7 @@ namespace Fahrgemeinschaftsapp
             string navigatemenu = Console.ReadLine();
             return navigatemenu;
         }
-        public static void ChangeUserPassword(string username) //by entering the old and new password, the user can change it
+        public static void ChangeUserPassword(string username) //by entering the old and new password, the user can change his/her password
         {
         ChangePW:
             Console.Clear();
@@ -330,7 +330,6 @@ namespace Fahrgemeinschaftsapp
             Console.WriteLine("Here are all users, who are currently looking for a carpool");
             Console.WriteLine("------------------------------------------------- ");
 
-            string[] userinfo = new string[8];
             foreach (string file in Directory.EnumerateFiles($@"C:\010Projects\019 Fahrgemeinschaft\Fahrgemeinschaftsapp\Userlist\\\\"))
             {
                 using (var reader = new StreamReader(file))
@@ -338,9 +337,7 @@ namespace Fahrgemeinschaftsapp
                     string[] values = new string[8];
                     var line = reader.ReadLine();
                     values = line.Split(';');
-                    userinfo = values;
-
-                    Console.WriteLine($"{userinfo[1]} ({userinfo[4]}/{userinfo[3]}), Start: {userinfo[5]}, Destination: {userinfo[6]}");
+                    Console.WriteLine($"{values[1]} ({values[4]}/{values[3]}), Start: {values[5]}, Destination: {values[6]}");
                 }
             }
             Console.WriteLine("------------------------------------------------- ");
@@ -409,7 +406,7 @@ namespace Fahrgemeinschaftsapp
         public static void CreateCarpool(List<Carpool> carpool, string username) //the user can create a carpool and add other users
         {
             DirectoryInfo di = new DirectoryInfo($@"C:\010Projects\019 Fahrgemeinschaft\Fahrgemeinschaftsapp\Carpools");
-
+            //Collecting the neccessary info
             Console.Clear();
             Console.WriteLine("How many passengers fit in the car?");
             int passengercount = Convert.ToInt32(Console.ReadLine()) + 1;
@@ -463,15 +460,10 @@ namespace Fahrgemeinschaftsapp
 
             using (StreamWriter writer = new StreamWriter($@"C:\010Projects\019 Fahrgemeinschaft\Fahrgemeinschaftsapp\Carpools\{Convert.ToString(carpoolID)}.csv"))
             {
-                
-                //writer.Write($" ID: {carpoolID}, Start: {startloc}, End: {destination}, Starttime: {s_departure}");
                 var newLine = $"{carpoolID};{startloc};{destination};{s_departure};";
                 
-                //writer.Write(",");
                 foreach (string passenger in passengers)
-                {
-                    //writer.WriteLine(passenger);
-                    //writer.Write(",");
+                {                    
                     newLine += $",{passenger},;";
                 }
                 writer.Write(newLine);
@@ -531,7 +523,7 @@ namespace Fahrgemeinschaftsapp
             }
             Console.WriteLine("------------------------------------------------- ");
             Console.WriteLine("[1] Create a carpool");
-            Console.WriteLine("[2] Delete a carpool");
+            Console.WriteLine("[2] Leave carpool");
             Console.WriteLine("[3] Go back to menu");
             string input = Console.ReadLine();
             if (input == "1")
@@ -540,11 +532,65 @@ namespace Fahrgemeinschaftsapp
             }
             else if (input == "2")
             {
-                DeleteCarpool(username);
+                LeaveCarpool(carpool, username);
             }
             else
             {
                 Console.Clear();
+            }
+        }
+        public static void LeaveCarpool(List<Carpool> carpool, string username)
+        {
+            Console.Clear();
+            Console.WriteLine("Enter the ID of the Carpool, you want to leave");
+            string filename = Console.ReadLine();
+            FileInfo fi = new FileInfo($@"C:\010Projects\019 Fahrgemeinschaft\Fahrgemeinschaftsapp\Carpools\{filename}.csv");
+
+            if (fi.Exists)
+            {
+                string text = File.ReadAllText($@"C:\010Projects\019 Fahrgemeinschaft\Fahrgemeinschaftsapp\Carpools\{filename}.csv");
+                if (text.Contains($",{username}"))
+                {
+
+                    string test = File.ReadAllText($@"C:\010Projects\019 Fahrgemeinschaft\Fahrgemeinschaftsapp\Carpools\{filename}.csv");
+                    string[] values = text.Split(';');
+                    var newline = string.Empty;
+
+                    foreach (string value in values)
+                    {
+
+                        if(value != $",{username},")
+                        {
+                            newline += $"{value};";
+                        }
+                    }                       
+                    
+                    using (StreamWriter writer = new StreamWriter($@"C:\010Projects\019 Fahrgemeinschaft\Fahrgemeinschaftsapp\Carpools\{filename}.csv"))
+                    {
+                        writer.Write(newline);
+                    }
+                    Console.WriteLine($"You got removed successfully from the carpool with the ID {filename}");
+                }
+                else
+                {
+                    Console.WriteLine("You're not a part of this carpool, therefore you can't leave it");
+                }
+            }
+            else
+            {
+                Console.WriteLine("This carpool does not exist");
+            }
+            //string content = File.ReadAllText($@"C:\010Projects\019 Fahrgemeinschaft\Fahrgemeinschaftsapp\Carpools\{filename}");
+
+            
+            
+            Console.WriteLine("------------------------------------------------- ");
+            Console.WriteLine("[1] Go back");
+            Console.WriteLine("[2] Go to menu");
+            string input = Console.ReadLine();
+            if(input == "1")
+            {
+                ViewYourCarpools(carpool, username);
             }
         }
         public static void DeleteCarpool(string username) //by entering the ID, the user can delete an existing carpool
