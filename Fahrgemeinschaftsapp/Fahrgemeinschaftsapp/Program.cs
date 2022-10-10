@@ -17,7 +17,8 @@ using System.Web;
 using System.Xml.Serialization;
 using static System.Net.WebRequestMethods;
 using File = System.IO.File;
-
+using System.Security.Cryptography;
+using System.Runtime.Remoting.Messaging;
 
 namespace Fahrgemeinschaftsapp
 {
@@ -91,24 +92,24 @@ namespace Fahrgemeinschaftsapp
                 FileInfo fi = new FileInfo($@"C:\010Projects\019 Fahrgemeinschaft\Fahrgemeinschaftsapp\Userlist\\\\/{username}.csv\");
                 if (fi.Exists)
                 {
-                    string input_pw = null;
-                    Console.WriteLine("Please enter your password");
-                    input_pw = HidePassword();
-                    
-                    using (StreamReader sr = new StreamReader(Path.Combine($@"C:\010Projects\019 Fahrgemeinschaft\Fahrgemeinschaftsapp\Userlist\\\\{username}.csv")))
-                    {
-                        string[] values = new string[7];
-                        var line = sr.ReadLine();
-                        values = line.Split(';');
 
-                        if (values[7] != input_pw)
+                    Console.WriteLine("Please enter your password");
+                    string input_pw = HashPassword(HidePassword());
+                    
+                    //using (StreamReader sr = new StreamReader(Path.Combine($@"C:\010Projects\019 Fahrgemeinschaft\Fahrgemeinschaftsapp\Userlist\\\\{username}.csv")))
+                    //{
+                    //    string[] values = new string[7];
+                    //    var line = sr.ReadLine();
+                    //    values = line.Split(';');
+
+                        if (!ValidatePassword(username,input_pw))
                         {
                             Console.WriteLine("Username or password is incorrect. Please the again!");
                             Thread.Sleep(750);
                             Console.Clear();
                             goto LoggingIn;
                            }                        
-                    }
+                    //}
                 }
                 else
                 {
@@ -144,15 +145,15 @@ namespace Fahrgemeinschaftsapp
                     using (File.Create(username))
                         Console.WriteLine($"Your username is now {username}");
                     Console.WriteLine("Choose a password");
-                    string pw = HidePassword();
+                    string pw = HashPassword(HidePassword());
                     Console.WriteLine("Confirm the password");
-                    string pw_confirm = HidePassword();
+                    string pw_confirm = HashPassword(HidePassword());
                     do
                     {
                         if (pw == pw_confirm)
                         {
                             using (StreamWriter writer = new StreamWriter($@"C:\010Projects\019 Fahrgemeinschaft\Fahrgemeinschaftsapp\Userlist\{username}.csv"))
-                                writer.WriteLine(pw);
+                                writer.WriteLine(HashPassword(pw));
                             break;
                         }
                         else
@@ -176,7 +177,6 @@ namespace Fahrgemeinschaftsapp
         public static void CollectUserInfo(string username, List<User> user_list) //Adding info to userspecific file
         {
             List<string> userinfo = new List<string>();
-            List<string> driverinfo = new List<string>();
             Console.Clear();
             Console.WriteLine("Whats your first name?");
             string firstname = Console.ReadLine();
@@ -191,15 +191,15 @@ namespace Fahrgemeinschaftsapp
             Console.WriteLine("Whats your destination?");
             string destination = Console.ReadLine();
             string hascarstring = string.Empty;
-            if(firstname != "Marcello")
+            if((firstname != "Marcello")&&(lastname != "Greulich"))
             {
                 Console.WriteLine("Do you have a car/Are you able to drive? (y/n)");
                 hascarstring = Console.ReadLine();
             }
             else
             {
-                Console.WriteLine("Because you drive 70+ km/h instead of 50 km/h while driving through villages," +
-                    " you are not able to get registered as driver");
+                Console.WriteLine("You drive 70+ km/h instead of 50 km/h while driving through villages," +
+                    "therefore you are not able to get registered as driver");
                 Thread.Sleep(2500);
                 hascarstring = "n";
             }
@@ -219,10 +219,6 @@ namespace Fahrgemeinschaftsapp
             bool hascar = false;
             if (hascarstring == "y")
             {
-                hascar = true;
-                FileInfo fi = new FileInfo($@"C:\010Projects\019 Fahrgemeinschaft\Fahrgemeinschaftsapp\Driverlist\\\\/{username}.csv\");
-                File.Create(username);
-
                 using (StreamWriter writer = new StreamWriter($@"C:\010Projects\019 Fahrgemeinschaft\Fahrgemeinschaftsapp\Userlist\{username}.csv"))
                 {
                     var newLine = $"{username};{firstname};{lastname};{Convert.ToString(age)};{gender};{startlocation};{destination};{pw};{hascar}";
@@ -246,7 +242,7 @@ namespace Fahrgemeinschaftsapp
             Console.WriteLine("Redirecting to Menu ...");
             Thread.Sleep(500);
         }
-
+           
         public static string Menu(string username) //printing the menu, where the user can choose what he/she wants to do
         {
             Console.Clear();  
@@ -275,8 +271,8 @@ namespace Fahrgemeinschaftsapp
         ChangePW:
             Console.Clear();
             Console.WriteLine("Please enter your old password");
-            string input_pw = HidePassword();
-            var filetext = File.ReadAllText($@"C:\010Projects\019 Fahrgemeinschaft\Fahrgemeinschaftsapp\Userlist\{username}.csv");
+            string input_pw = HashPassword(HidePassword());
+            var filetext = File.ReadAllText($@"C:\010Projects\019 Fahrgemeinschaft\Fahrgemeinschaftsapp\Userlist\{username}.csv");  
             string[] values = filetext.Split(';');
             string user_pw = values[7];
             user_pw = user_pw.Replace("\r\n", string.Empty);
@@ -284,7 +280,7 @@ namespace Fahrgemeinschaftsapp
             if (input_pw == user_pw)
             {
                 Console.WriteLine("Please enter your new password");
-                string new_pw = HidePassword();
+                string new_pw = HashPassword(HidePassword());
                 if(new_pw == user_pw)
                 {  
                     Console.WriteLine("Your new password cant be your old password!");
@@ -292,14 +288,14 @@ namespace Fahrgemeinschaftsapp
                     goto ChangePW;
                 }
                 Console.WriteLine("Please confirm your new password");
-                string confirm_new_pw = HidePassword();
+                string confirm_new_pw = HashPassword(HidePassword());
                 if (confirm_new_pw == new_pw)
                 {
                     values[7] = new_pw;
 
                     using (StreamWriter writer = new StreamWriter($@"C:\010Projects\019 Fahrgemeinschaft\Fahrgemeinschaftsapp\Userlist\{username}.csv"))
                     {
-                        writer.WriteLine($"{values[0]};{values[1]};{values[2]};{values[3]};{values[4]};{values[5]};{values[6]};{values[7]}");
+                        writer.WriteLine($"{values[0]};{values[1]};{values[2]};{values[3]};{values[4]};{values[5]};{values[6]};{values[7]};{values[8]}");
                     }
                     Console.Clear();
                     Console.WriteLine("Your password got changed");
@@ -314,7 +310,7 @@ namespace Fahrgemeinschaftsapp
                     goto ChangePW;
                 }
             }
-            else if (input_pw != user_pw)
+            else if (ValidatePassword(username, input_pw))
             {
                 Console.WriteLine("The password was incorrect, please try again");
                 Thread.Sleep(1500);
@@ -476,7 +472,7 @@ namespace Fahrgemeinschaftsapp
             Console.WriteLine("[5] Start place");
             Console.WriteLine("[6] Destination");
             Console.WriteLine("[7] is driver?");
-            Console.WriteLine("");
+            Console.WriteLine("-------------------------------------------------");
             Console.WriteLine("[8] Go back");
             Console.WriteLine("[9] Go to menu");
 
@@ -523,11 +519,7 @@ namespace Fahrgemeinschaftsapp
                     else if (candrive == "n")
                     {
                         values[8] = "FALSE";
-                    }
-                    using (StreamWriter writer = new StreamWriter($@"C:\010Projects\019 Fahrgemeinschaft\Fahrgemeinschaftsapp\Userlist\{username}.csv"))
-                    {
-                        writer.WriteLine($"{values[0]};{values[1]};{values[2]};{values[4]};{values[5]};{values[6]};{values[7]};{values[8]}");
-                    }
+                    }                   
                     break;
                 case "8":
                     goback = true;
@@ -538,7 +530,7 @@ namespace Fahrgemeinschaftsapp
             }
             using (StreamWriter writer = new StreamWriter($@"C:\010Projects\019 Fahrgemeinschaft\Fahrgemeinschaftsapp\Userlist\{username}.csv"))
             {
-                writer.WriteLine($"{values[0]};{values[1]};{values[2]};{values[3]};{values[4]};{values[5]};{values[6]};{values[7]}");
+                writer.WriteLine($"{values[0]};{values[1]};{values[2]};{values[3]};{values[4]};{values[5]};{values[6]};{values[7]};{values[8]}");
             }
             if (gotomenu)
             {
@@ -874,13 +866,13 @@ namespace Fahrgemeinschaftsapp
             Console.ForegroundColor = ConsoleColor.Red;
             Console.Clear();
             Console.WriteLine("Please enter your password");
-            string input_pw = HidePassword();
+            string input_pw = HashPassword(HidePassword());
             var filetext = File.ReadAllText($@"C:\010Projects\019 Fahrgemeinschaft\Fahrgemeinschaftsapp\Userlist\{username}.csv");
             string[] values = filetext.Split(';');
             string user_pw = values[7];
             user_pw = user_pw.Replace("\r\n", string.Empty);
 
-            if (user_pw == input_pw)
+            if (ValidatePassword(username, input_pw))
             {
                 Console.WriteLine("Do you really want to delete your account? (y/n)");
                 Console.WriteLine("This action is irreversible and all carpool you're a part of will get deleted");
@@ -961,6 +953,46 @@ namespace Fahrgemeinschaftsapp
             }
             Console.WriteLine(" ");
             return sb.ToString();
+        }
+        public static string HashPassword(string password)
+        {
+            byte[] tmpSource = ASCIIEncoding.ASCII.GetBytes(password);
+            byte[] tmpHash = new MD5CryptoServiceProvider().ComputeHash(tmpSource);
+
+            int i;
+            StringBuilder sOutput = new StringBuilder(tmpHash.Length);
+            for (i = 0; i < tmpHash.Length; i++)
+            {
+                sOutput.Append(tmpHash[i].ToString("X2"));
+            }
+            return sOutput.ToString();
+
+        }
+        public static bool ValidatePassword(string username,string password)
+        {
+            string tmpNewHash = HashPassword(password);
+            bool bEqual = false;
+            string tmpHash;
+            using (StreamReader sr = new StreamReader($@"C:\010Projects\019 Fahrgemeinschaft\Fahrgemeinschaftsapp\Userlist\{username}.csv"))
+            {
+                var line = sr.ReadLine();
+                var values = line.Split(';');
+                tmpHash = values[7];
+                tmpHash = tmpHash.Replace("\r\n", string.Empty);
+            }
+            if (tmpNewHash.Length == tmpHash.Length)
+            {
+                int i = 0;
+                while ((i < tmpNewHash.Length) && (tmpNewHash[i] == tmpHash[i]))
+                {
+                    i += 1;
+                }
+                if (i == tmpNewHash.Length)
+                {
+                    bEqual = true;
+                }
+            }
+            return bEqual;
         }
     }   
 }
