@@ -34,40 +34,45 @@ namespace Fahrgemeinschaftsapp
                 Console.WriteLine("Welcome to the carpool app");
                 Console.WriteLine(" ");
                 string userName = LogIn(userList);
-                bool loggedIn = true;
+                
 
                Home:
-                    string userInput = Menu(userName);
-                    switch (userInput)
-                    {
-                        case "1":
-                            userName = PrintUserInfo(userName);
+                bool loggedIn = true;
+                string userInput = Menu(userName);
+                switch (userInput)
+                {
+                    case "1":
+                        userName = PrintUserInfo(userName);
+                        goto Home;
+                    case "2":
+                        PrintAllUsers(userName);
+                        goto Home;
+                    case "3":
+                        PrintAllDrivers(userName);
+                        goto Home;
+                    case "4":
+                        CreateCarpool(carPoolList, userName);
+                        goto Home;
+                    case "5":
+                        ViewYourCarpools(carPoolList, userName);
+                        goto Home;
+                    case "6":
+                        DeleteCarpool(userName);
+                        goto Home;
+                    case "7":
+                        userName = Settings(userName);
+                        if (loggedIn)
+                        {
                             goto Home;
-                        case "2":
-                            PrintAllUsers(userName);
-                            goto Home;
-                        case "3":
-                            PrintAllDrivers(userName);
-                            goto Home;
-                        case "4":
-                            CreateCarpool(carPoolList, userName);
-                            goto Home;
-                        case "5":
-                            ViewYourCarpools(carPoolList, userName);
-                            goto Home;
-                        case "6":
-                            DeleteCarpool(userName);
-                            goto Home;
-                        case "7":
-                            ChangeUserPassword(userName);
-                            goto Home;
-                        case "8":
-                            loggedIn = DeleteAccount(userName);
+                        }
+                        else
+                        {
                             break;
-                        case "9":
-                            loggedIn = false;
-                            break;
-                    }
+                        }
+                    case "8":
+                        loggedIn = false;
+                        break;
+                }
                
                 Console.Clear();
                 Console.ForegroundColor = ConsoleColor.Red;
@@ -258,12 +263,39 @@ namespace Fahrgemeinschaftsapp
             Console.WriteLine("[5] View your carpools");
             Console.WriteLine("[6] Delete a carpool");
             Console.WriteLine("--------------------------------------------------- ");
-            Console.WriteLine("[7] Change password");
-            Console.WriteLine("[8] Delete your account");
-            Console.WriteLine("[9] Log out");
+            Console.WriteLine("[7] Settings");
+            Console.WriteLine("[8] Log out");
 
             string navigateMenu = Console.ReadLine();
             return navigateMenu;
+        }
+        public static string Settings(string userName)
+        {
+            Console.Clear();
+            Console.WriteLine("Settings");
+            Console.WriteLine("--------------------------------------------------- ");
+            Console.WriteLine("[1] Change username");
+            Console.WriteLine("[2] Change password");
+            Console.WriteLine("[3] Delete your account");
+            Console.WriteLine("--------------------------------------------------- ");
+            Console.WriteLine("[4] Back to menu");
+            string userInput = Console.ReadLine();
+            switch (userInput)
+            {
+                case "1":
+                    ChangeUserName(userName);
+                    break;
+                case "2":
+                    ChangeUserPassword(userName);
+                    break;
+                case "3":
+                    DeleteAccount(userName);
+                    break;
+                default:
+                    Menu(userName);
+                    break;
+            }
+            return userName;
         }
 
         public static void ChangeUserPassword(string userName) //by entering the old and new password, the user can change his/her password
@@ -320,7 +352,7 @@ namespace Fahrgemeinschaftsapp
                 goto ChangePW;
             }
         }
-        public static string ChangeUsername(string userName)
+        public static string ChangeUserName(string userName)
         {
             string[] values = new string[8];
             using (var reader = new StreamReader($@"C:\010Projects\019 Fahrgemeinschaft\Fahrgemeinschaftsapp\Userlist\{userName}.csv"))
@@ -365,7 +397,7 @@ namespace Fahrgemeinschaftsapp
                             string newInfo = string.Empty;
                             foreach (string info in carpoolInfos)
                             {
-                                newInfo += $"{info};";
+                                newInfo += $";{info}";
                             }
                             using(StreamWriter writer = new StreamWriter($@"C:\010Projects\019 Fahrgemeinschaft\Fahrgemeinschaftsapp\Carpools\{file}"))
                             {
@@ -566,7 +598,7 @@ namespace Fahrgemeinschaftsapp
             switch (input)
             {
                 case "1":
-                    userName = ChangeUsername(userName);
+                    userName = ChangeUserName(userName);
                     values[0] = userName;
                     break;
                 case "2":
@@ -945,7 +977,7 @@ namespace Fahrgemeinschaftsapp
             }
         }
 
-        public static bool DeleteAccount(string userName) //the user can delete his account and all carpools he/she is a part of
+        public static void DeleteAccount(string userName) //the user can delete his account and all carpools he/she is a part of
         {
             bool loggenIn = true;
             Console.ForegroundColor = ConsoleColor.Red;
@@ -996,7 +1028,7 @@ namespace Fahrgemeinschaftsapp
                     Console.ForegroundColor = ConsoleColor.White;
                     Thread.Sleep(2000);
                     loggenIn = false;
-                    return loggenIn;
+                    //return loggenIn;
                 }
                 else
                 {
@@ -1004,7 +1036,7 @@ namespace Fahrgemeinschaftsapp
                     Console.ForegroundColor = ConsoleColor.White;
                     Console.WriteLine("Redirecting to menu ...");
                     Thread.Sleep(1000);
-                    return loggenIn;
+                    //return loggenIn;
                 }
             }
             else
@@ -1012,7 +1044,7 @@ namespace Fahrgemeinschaftsapp
                 Console.Clear();
                 Console.WriteLine("The password was not correct");
                 Console.WriteLine("Redirecting to menu ...");
-                return loggenIn;
+                //return loggenIn;
             }
         }
 
