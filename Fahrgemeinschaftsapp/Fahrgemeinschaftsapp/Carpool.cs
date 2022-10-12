@@ -13,14 +13,16 @@ namespace Fahrgemeinschaftsapp
         public string Destination { get; set; }
         public string StartLocation { get; set; }
         public DateTime Departure { get; set; }
+        public string Password { get; set; }
 
-        public Carpool(int id, int passengercount, string destination,string startlocation, DateTime departure)
+        public Carpool(int id, int passengercount, string destination,string startlocation, DateTime departure, string password)
         {
             Id = id;
             PassengerCount = passengercount;
             Destination = destination;
             StartLocation = startlocation;
             Departure = departure;
+            Password = password;
         }
 
 

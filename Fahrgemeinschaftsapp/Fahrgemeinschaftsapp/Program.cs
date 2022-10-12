@@ -54,13 +54,13 @@ namespace Fahrgemeinschaftsapp
                         CreateCarpool(carPoolList, userName);
                         goto Home;
                     case "5":
-                        ViewYourCarpools(carPoolList, userName);
+                        ViewYourCarpools(carPoolList, userName); //TODO Add carpool password, so you only can join carpools by entering it
                         goto Home;
                     case "6":
                         DeleteCarpool(userName);
                         goto Home;
                     case "7":
-                        userName = Settings(userName);
+                        userName = Settings(userName); //TODO fix delete account log off issue
                         if (loggedIn)
                         {
                             goto Home;
@@ -107,7 +107,7 @@ namespace Fahrgemeinschaftsapp
                     //    var line = sr.ReadLine();
                     //    values = line.Split(';');
 
-                        if (!ValidatePassword(userName,inputPassword))
+                        if (!ValidateUserPassword(userName,inputPassword))
                         {
                             Console.WriteLine("Username or password is incorrect. Please the again!");
                             Thread.Sleep(750);
@@ -292,9 +292,8 @@ namespace Fahrgemeinschaftsapp
                     DeleteAccount(userName);
                     break;
                 default:
-                    Menu(userName);
                     break;
-            }
+            }   
             return userName;
         }
 
@@ -306,11 +305,11 @@ namespace Fahrgemeinschaftsapp
             string inputPw = HidePassword();
 
 
-            if (ValidatePassword(userName, inputPw))
+            if (ValidateUserPassword(userName, inputPw))
             {
                 Console.WriteLine("Please enter your new password");
                 string newPw = HidePassword();
-                if(ValidatePassword(userName, newPw))
+                if(ValidateUserPassword(userName, newPw))
                 {  
                     Console.WriteLine("Your new password cant be your old password!");
                     Thread.Sleep(1000);
@@ -344,7 +343,7 @@ namespace Fahrgemeinschaftsapp
                     goto ChangePW;
                 }
             }
-            else if (!ValidatePassword(userName, inputPw))
+            else if (!ValidateUserPassword(userName, inputPw))
             {
                 Console.WriteLine("The password was incorrect, please try again");
                 Thread.Sleep(1500);
@@ -363,7 +362,7 @@ namespace Fahrgemeinschaftsapp
             Console.WriteLine("Please enter your password");
             string inputPw = HidePassword();
 
-            if (ValidatePassword(userName, inputPw))
+            if (ValidateUserPassword(userName, inputPw))
             {               
                 Console.WriteLine("What should be your new Username?");
                 TryAgain:
@@ -686,8 +685,9 @@ namespace Fahrgemeinschaftsapp
             DateTime departure = Convert.ToDateTime(Console.ReadLine());
             int carpoolID = di.GetFiles().Length;
             string departureString = departure.ToShortTimeString();
-            carpool.Add(new Carpool(carpoolID, passengerCount, destination, startLoc, departure));
+            
 
+            
             do
             {
                 FileInfo fi = new FileInfo($@"C:\010Projects\019 Fahrgemeinschaft\Fahrgemeinschaftsapp\Carpools\\\\/{carpoolID}.csv\");
@@ -728,10 +728,12 @@ namespace Fahrgemeinschaftsapp
                 }
             }
             passengers.Add(userName);
-
+            Console.WriteLine("Please enter a password for the carpool");
+            string carpoolPassword = HashPassword(HidePassword());
+            carpool.Add(new Carpool(carpoolID, passengerCount, destination, startLoc, departure, carpoolPassword));
             using (StreamWriter writer = new StreamWriter($@"C:\010Projects\019 Fahrgemeinschaft\Fahrgemeinschaftsapp\Carpools\{Convert.ToString(carpoolID)}.csv"))
             {
-                var newLine = $"{carpoolID};{startLoc};{destination};{departureString};{passengerCount}";
+                var newLine = $"{carpoolID};{startLoc};{destination};{departureString};{carpoolPassword};{passengerCount}";
 
                 foreach (string passenger in passengers)
                 {
@@ -778,20 +780,23 @@ namespace Fahrgemeinschaftsapp
                         Console.WriteLine($"The Carpool with the ID {values[0].Trim(',')} will start at {values[3]} in {values[1]}");
                         Console.WriteLine($"It's destination is {values[2]}");
                         Console.WriteLine("The passengers are:");
-                        for(int i = 5; i < values.Length; i++)
+                        for(int i = 6; i < 6 + Convert.ToInt32(values[5]); i++)
                         {
-                            values[i] = values[i].Trim(',');
-                            if (values[i] == userName)
+                            //values[i] = values[i].Trim(',');
+                            
+                            if (values[i].Equals($",{userName},"))
                             {
                                 values[i] = "You";
                                 values[i].Replace("\r\n", string.Empty);
                             }
-                            Console.WriteLine(values[i]);
+                            values[i].Replace(",\r\n", string.Empty);
+                            Console.WriteLine($"{values[i].Replace("\r\n", string.Empty).Trim(',')}");
                         }
+                        
                     }
-                }
+                }  
             }
-            Console.WriteLine("");
+            Console.WriteLine(" ");
             Console.WriteLine("------------------------------------------------- ");
             Console.WriteLine("[1] Create a carpool");
             Console.WriteLine("[2] Join a carpool");
@@ -819,39 +824,55 @@ namespace Fahrgemeinschaftsapp
             Console.Clear();
             Console.WriteLine("Enter the ID of the Carpool you want to join");
             string fileName = Console.ReadLine();
+            Console.WriteLine("Please enter the password of this carpool");
+            string carpoolPassword = HidePassword();
             FileInfo fi = new FileInfo($@"C:\010Projects\019 Fahrgemeinschaft\Fahrgemeinschaftsapp\Carpools\{fileName}.csv");
             if (fi.Exists)
             {
-                string text = File.ReadAllText($@"C:\010Projects\019 Fahrgemeinschaft\Fahrgemeinschaftsapp\Carpools\{fileName}.csv").Replace("\r\n", string.Empty);
-                string[] values = text.Split(';');
-                List<string> passengers = new List<string>();
-                for(int i = 5; i < values.Length; i++)
+                if (ValidateCarpoolPassword(fileName, carpoolPassword))
                 {
-                    if (values[i] != "")
+                    string text = File.ReadAllText($@"C:\010Projects\019 Fahrgemeinschaft\Fahrgemeinschaftsapp\Carpools\{fileName}.csv").Replace("\r\n", string.Empty);
+                    string[] values = text.Split(';');
+                    List<string> passengers = new List<string>();
+                    for (int i = 6; i < values.Length; i++)
                     {
-                        passengers.Add(values[i].Replace("\r\n", string.Empty));
-                    }                   
-                }
-                if(values.Length-5 < Convert.ToInt32(values[4]))
-                {
-                    using (StreamWriter writer = new StreamWriter($@"C:\010Projects\019 Fahrgemeinschaft\Fahrgemeinschaftsapp\Carpools\{fileName}.csv"))
-                    {
-                        var newLine = $"{values[0]};{values[1]};{values[2]};{values[3]};{values[4]}";
-
-                        foreach (string passenger in passengers)
+                        if (values[i] != "")
                         {
-                            newLine += $";{passenger}";
+                            passengers.Add(values[i].Replace("\r\n", string.Empty));
                         }
-                        newLine += $";,{userName},";
-                        
-                        writer.Write(newLine.Replace("\r\n", string.Empty));
                     }
-                    Console.Clear();
-                    Console.WriteLine($"You successfully join the carpool with the ID {values[0]}");
-                    Console.WriteLine(" ");
+                    if (values.Length - 6 < Convert.ToInt32(values[5]))
+                    {
+                        using (StreamWriter writer = new StreamWriter($@"C:\010Projects\019 Fahrgemeinschaft\Fahrgemeinschaftsapp\Carpools\{fileName}.csv"))
+                        {
+                            var newLine = $"{values[0]};{values[1]};{values[2]};{values[3]};{values[4]};{values[5]}";
+
+                            foreach (string passenger in passengers)
+                            {
+                                newLine += $";{passenger}";
+                            }
+                            newLine += $";,{userName},";
+
+                            writer.Write(newLine.Replace("\r\n", string.Empty));
+                        }
+                        Console.Clear();
+                        Console.WriteLine($"You successfully joined the carpool with the ID {values[0]}");
+                        Console.WriteLine(" ");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"You cant join the carpool with the ID {values[0]}, there are no free seats");
+                        Console.WriteLine(" ");
+                    }
+                    
                 }
-                Console.WriteLine($"You cant join the carpool with the ID {values[0]}, there are no free seats");
-                Console.WriteLine(" ");                
+                else
+                {
+                    Console.WriteLine("The password is wrong.");
+                    Console.WriteLine("Redirecting to menu ...");
+                    Thread.Sleep(1000);
+                }
+                              
             }
             else
             {
@@ -874,41 +895,58 @@ namespace Fahrgemeinschaftsapp
             Console.Clear();
             Console.WriteLine("Enter the ID of the Carpool you want to leave");
             string fileName = Console.ReadLine();
+            Console.WriteLine("Please enter the carpool password");
+            string userPw = HidePassword();
+            
             FileInfo fi = new FileInfo($@"C:\010Projects\019 Fahrgemeinschaft\Fahrgemeinschaftsapp\Carpools\{fileName}.csv");
             if (fi.Exists)
             {
-                string text = File.ReadAllText($@"C:\010Projects\019 Fahrgemeinschaft\Fahrgemeinschaftsapp\Carpools\{fileName}.csv");
-                if (text.Contains($",{userName},"))
+                if (ValidateCarpoolPassword(fileName, userPw))
                 {
-                    string test = File.ReadAllText($@"C:\010Projects\019 Fahrgemeinschaft\Fahrgemeinschaftsapp\Carpools\{fileName}.csv");
-                    string[] values = text.Split(';');
-                    var newLine = string.Empty;
+                    string text = File.ReadAllText($@"C:\010Projects\019 Fahrgemeinschaft\Fahrgemeinschaftsapp\Carpools\{fileName}.csv");
+                    if (text.Contains($",{userName},"))
+                    {
+                        string test = File.ReadAllText($@"C:\010Projects\019 Fahrgemeinschaft\Fahrgemeinschaftsapp\Carpools\{fileName}.csv");
+                        string[] values = text.Split(';');
+                        var newLine = string.Empty;
 
-                    foreach (string value in values)
-                    {
-                        if(value != $",{userName},")
+                        foreach (string value in values)
                         {
-                            newLine += $"{value};";
+                            if (value.Replace("\r\n", string.Empty) != $",{userName},")
+                            {
+                                if(value != string.Empty)
+                                {
+                                    newLine += $"{value};";
+                                }
+                                
+                            }
                         }
-                    }                                          
-                    using (StreamWriter writer = new StreamWriter($@"C:\010Projects\019 Fahrgemeinschaft\Fahrgemeinschaftsapp\Carpools\{fileName}.csv"))
-                    {
-                        writer.Write(newLine);
+                        newLine = newLine.TrimEnd(';');
+                        using (StreamWriter writer = new StreamWriter($@"C:\010Projects\019 Fahrgemeinschaft\Fahrgemeinschaftsapp\Carpools\{fileName}.csv"))
+                        {
+                            writer.Write(newLine);
+                        }
+                        Console.Clear();
+                        Console.WriteLine($"You got successfully removed from the carpool with the ID {fileName}");
                     }
-                    Console.Clear();
-                    Console.WriteLine($"You got removed successfully from the carpool with the ID {fileName}");
+                    else
+                    {
+                        Console.Clear();
+                        Console.WriteLine("You're not a part of this carpool, therefore you can't leave it");
+                    }
+                    string content = File.ReadAllText($@"C:\010Projects\019 Fahrgemeinschaft\Fahrgemeinschaftsapp\Carpools\{fileName}.csv");
+                    string[] csv = content.Split(';');
+                    if (csv.Length <= 6)
+                    {
+                        File.Delete($@"C:\010Projects\019 Fahrgemeinschaft\Fahrgemeinschaftsapp\Carpools\{fileName}.csv");
+                    }
                 }
                 else
                 {
-                    Console.Clear();
-                    Console.WriteLine("You're not a part of this carpool, therefore you can't leave it");
+                    Console.WriteLine("The password is incorrect");
+                    Console.WriteLine("");
                 }
-                string content = File.ReadAllText($@"C:\010Projects\019 Fahrgemeinschaft\Fahrgemeinschaftsapp\Carpools\{fileName}.csv");
-                string[] csv = content.Split(';');
-                if (csv.Length <= 6)
-                {
-                    File.Delete($@"C:\010Projects\019 Fahrgemeinschaft\Fahrgemeinschaftsapp\Carpools\{fileName}.csv");
-                }
+                
             }
             else
             {
@@ -986,10 +1024,9 @@ namespace Fahrgemeinschaftsapp
             string inputPw = HidePassword();
             var fileText = File.ReadAllText($@"C:\010Projects\019 Fahrgemeinschaft\Fahrgemeinschaftsapp\Userlist\{userName}.csv");
             string[] values = fileText.Split(';');
-            string userPw = values[7];
-            userPw = userPw.Replace("\r\n", string.Empty);
+            string userPw = values[7].Replace("\r\n", string.Empty);
 
-            if (ValidatePassword(userName, inputPw))
+            if (ValidateUserPassword(userName, inputPw))
             {
                 Console.WriteLine("Do you really want to delete your account? (y/n)");
                 Console.WriteLine("This action is irreversible and all carpool you're a part of will get deleted");
@@ -1027,7 +1064,7 @@ namespace Fahrgemeinschaftsapp
                     Console.WriteLine("Your account got deleted");
                     Console.ForegroundColor = ConsoleColor.White;
                     Thread.Sleep(2000);
-                    loggenIn = false;
+                    Environment.Exit(0);
                     //return loggenIn;
                 }
                 else
@@ -1084,7 +1121,7 @@ namespace Fahrgemeinschaftsapp
             }
             return sOutput.ToString();
         }
-        public static bool ValidatePassword(string userName,string inputPw) //checks if user input equals password
+        public static bool ValidateUserPassword(string userName,string inputPw) //checks if user input equals password
         {
             string tmpNewHash = HashPassword(inputPw);
             bool bEqual = false;
@@ -1094,6 +1131,32 @@ namespace Fahrgemeinschaftsapp
                 var line = sr.ReadLine();
                 var values = line.Split(';');
                 tmpHash = values[7];
+                tmpHash = tmpHash.Replace("\r\n", string.Empty);
+            }
+            if (tmpNewHash.Length == tmpHash.Length)
+            {
+                int i = 0;
+                while ((i < tmpNewHash.Length) && (tmpNewHash[i] == tmpHash[i]))
+                {
+                    i += 1;
+                }
+                if (i == tmpNewHash.Length)
+                {
+                    bEqual = true;
+                }
+            }
+            return bEqual;
+        }
+        public static bool ValidateCarpoolPassword(string cpID, string inputPw) //checks if user input equals password
+        {
+            string tmpNewHash = HashPassword(inputPw);
+            bool bEqual = false;
+            string tmpHash;
+            using (StreamReader sr = new StreamReader($@"C:\010Projects\019 Fahrgemeinschaft\Fahrgemeinschaftsapp\Carpools\{cpID}.csv"))
+            {
+                var line = sr.ReadLine();
+                var values = line.Split(';');
+                tmpHash = values[4];
                 tmpHash = tmpHash.Replace("\r\n", string.Empty);
             }
             if (tmpNewHash.Length == tmpHash.Length)
