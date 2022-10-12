@@ -27,26 +27,33 @@ namespace Fahrgemeinschaftsapp
         static void Main(string[] args)
         {
             Console.Title = "Carpool App by Leon";
-            List<User> userList = new List<User>();
-            List<Carpool> carPoolList = new List<Carpool>();
-            bool loggedIn = true;
-            while (loggedIn)
-            {
+            while (true)
+            {               
+                List<User> userList = new List<User>();
+                List<Carpool> carPoolList = new List<Carpool>();
+                bool loggedIn;
                 Console.WriteLine("Welcome to the carpool app");
                 Console.WriteLine(" ");
                 string userName = User.LogIn(userList);
-                loggedIn = Program.Dashboard(userName, carPoolList);
+                do
+                {
+                    loggedIn = Program.Dashboard(userName, carPoolList);
+                } while (loggedIn);
+                Console.Clear();
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("Logging out ...");
+                Console.ForegroundColor = ConsoleColor.White;
+                Thread.Sleep(1000);
+                Console.Clear();
             }
-
-            Console.Clear();
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine("Logging out ...");
-            Console.ForegroundColor = ConsoleColor.White;
-            Thread.Sleep(1000);
-            Console.Clear();
-
         }
 
+        /// <summary>
+        /// manages the input in the menu
+        /// </summary>
+        /// <param name="userName"></param>
+        /// <param name="carPoolList"></param>
+        /// <returns></returns>
         public static bool Dashboard(string userName, List<Carpool> carPoolList)
         {
         Home:
@@ -73,7 +80,7 @@ namespace Fahrgemeinschaftsapp
                     Carpool.DeleteCarpool(userName);
                     goto Home;
                 case "7":
-                    userName = Settings(userName); //TODO fix delete account log off issue
+                    userName = Settings(userName);
                     if (loggedIn)
                     {
                         goto Home;
@@ -88,6 +95,7 @@ namespace Fahrgemeinschaftsapp
             }
             return loggedIn;
         }
+
         /// <summary>
         /// printing the menu, where the user can choose what he/she wants to do
         /// </summary>
@@ -95,7 +103,6 @@ namespace Fahrgemeinschaftsapp
         /// <returns></returns>
         public static string Menu(string userName)
         {
-
             Console.Clear();
             Console.WriteLine($"Welcome {userName},");
             Console.WriteLine("--------------------------------------------------- ");

@@ -16,7 +16,7 @@ namespace Fahrgemeinschaftsapp
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
-        public static string[] Read(string path)
+        public   static string[] Read(string path)
         {
             string[] values = null;
             using (var reader = new StreamReader(path))
@@ -26,7 +26,5 @@ namespace Fahrgemeinschaftsapp
             }
             return values;
         }
-    }
-
-     
+    }    
 }

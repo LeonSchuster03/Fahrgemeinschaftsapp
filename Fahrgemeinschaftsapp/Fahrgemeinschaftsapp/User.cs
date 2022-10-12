@@ -110,7 +110,7 @@ namespace Fahrgemeinschaftsapp
                         if (pw == pwConfirm)
                         {
                             using (StreamWriter writer = new StreamWriter($@"C:\010Projects\019 Fahrgemeinschaft\Fahrgemeinschaftsapp\Userlist\{userName}.csv"))
-                                writer.WriteLine(Program.HashPassword(pw));
+                                writer.WriteLine(pw);
                             break;
                         }
                         else
@@ -140,23 +140,16 @@ namespace Fahrgemeinschaftsapp
         {
             List<string> userInfo = new List<string>();
             Console.Clear();
-            Console.WriteLine("Whats your first name?");
-            string firstName = Console.ReadLine();
-            Console.WriteLine("Whats your last name?");
-            string lastName = Console.ReadLine();
-            Console.WriteLine("Please enter your age");
-            int age = Convert.ToInt32(Console.ReadLine());
-            Console.WriteLine("Whats your gender (m/f/d)");
-            string gender = Console.ReadLine();
-            Console.WriteLine("Where is your starting location");
-            string startLocation = Console.ReadLine();
-            Console.WriteLine("Whats your destination?");
-            string destination = Console.ReadLine();
+            string firstName = InputCheck.StringCheck("Whats your first name?");
+            string lastName = InputCheck.StringCheck("Whats your last name?");
+            int age = InputCheck.NumberCheck("Please enter your age");
+            string gender = InputCheck.GenderCheck(); 
+            string startLocation = InputCheck.StringCheck("Where is your starting location?");
+            string destination = InputCheck.StringCheck("What is your destination?");
             string hasCarString;// = string.Empty;
             if ((firstName != "Marcello") && (lastName != "Greulich"))
             {
-                Console.WriteLine("Do you have a car/Are you able to drive? (y/n)");
-                hasCarString = Console.ReadLine();
+                hasCarString = InputCheck.YesOrNoCheck("Do you have a car/Are you able to drive? (y/n)");
             }
             else
             {
@@ -181,19 +174,16 @@ namespace Fahrgemeinschaftsapp
             bool hascar = false;
             if (hasCarString == "y")
             {
-                using (StreamWriter writer = new StreamWriter($@"C:\010Projects\019 Fahrgemeinschaft\Fahrgemeinschaftsapp\Userlist\{userName}.csv"))
-                {
-                    var newLine = $"{userName};{firstName};{lastName};{Convert.ToString(age)};{gender};{startLocation};{destination};{pw};{hascar}";
-                    writer.WriteLine(newLine);
-                }
+                hascar = true;
             }
             else if (hasCarString == "n")
             {
-                using (StreamWriter writer = new StreamWriter($@"C:\010Projects\019 Fahrgemeinschaft\Fahrgemeinschaftsapp\Userlist\{userName}.csv"))
-                {
-                    var newLine = $"{userName};{firstName};{lastName};{Convert.ToString(age)};{gender};{startLocation};{destination};{pw};{hascar}";
-                    writer.WriteLine(newLine);
-                }
+                hascar = false;
+            }
+            using (StreamWriter writer = new StreamWriter($@"C:\010Projects\019 Fahrgemeinschaft\Fahrgemeinschaftsapp\Userlist\{userName}.csv"))
+            {
+                var newLine = $"{userName};{firstName};{lastName};{Convert.ToString(age)};{gender};{startLocation};{destination};{pw};{hascar}";
+                writer.WriteLine(newLine);
             }
             userList.Add(new User(userName, firstName, lastName, age, gender, startLocation, destination, hascar));
 
@@ -593,9 +583,9 @@ namespace Fahrgemeinschaftsapp
 
             if (ValidatePassword(userName, inputPw))
             {
-                Console.WriteLine("Do you really want to delete your account? (y/n)");
-                Console.WriteLine("This action is irreversible and all carpool you're a part of will get deleted");
-                string confirmation = Console.ReadLine();
+                
+                string confirmation = InputCheck.YesOrNoCheck("Do you really want to delete your account? (y/n)" +
+                    "This action is irreversible and all carpool you're a part of will get deleted");
                 if (confirmation == "y")
                 {
                     File.Delete($@"C:\010Projects\019 Fahrgemeinschaft\Fahrgemeinschaftsapp\Userlist\{userName}.csv");
@@ -643,9 +633,11 @@ namespace Fahrgemeinschaftsapp
             }
             else
             {
+                Console.ForegroundColor= ConsoleColor.White;
                 Console.Clear();
                 Console.WriteLine("The password was not correct");
                 Console.WriteLine("Redirecting to menu ...");
+                Thread.Sleep(1000);
                 //return loggenIn;
             }
         }
