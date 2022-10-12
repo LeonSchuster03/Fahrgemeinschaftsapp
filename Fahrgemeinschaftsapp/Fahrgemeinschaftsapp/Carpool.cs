@@ -26,8 +26,13 @@ namespace Fahrgemeinschaftsapp
             Departure = departure;
             Password = password;
         }
-
-        public static void CreateCarpool(List<Carpool> carpool, string userName) //the user can create a carpool and add other users
+        
+        /// <summary>
+        /// the user can create a carpool and add other users
+        /// </summary>
+        /// <param name="carpool"></param>
+        /// <param name="userName"></param>
+        public static void CreateCarpool(List<Carpool> carpool, string userName)
         {
             DirectoryInfo di = new DirectoryInfo($@"C:\010Projects\019 Fahrgemeinschaft\Fahrgemeinschaftsapp\Carpools");
             //Collecting the neccessary info
@@ -116,7 +121,12 @@ namespace Fahrgemeinschaftsapp
             }
         }
 
-        public static void ViewYourCarpools(List<Carpool> carpool, string userName) //the user gets to see all carpools, where he/she is a member of
+        /// <summary>
+        /// the user gets to see all carpools, where he/she is a member of
+        /// </summary>
+        /// <param name="carpool"></param>
+        /// <param name="userName"></param>
+        public static void ViewYourCarpools(List<Carpool> carpool, string userName)
         {
             Console.Clear();
             Console.WriteLine("Here you can see all the carpools, you are a part of:");
@@ -176,7 +186,12 @@ namespace Fahrgemeinschaftsapp
             }
         }
 
-        public static void JoinCarpool(List<Carpool> carpool, string userName) //the user can enter a id of a carpool and join it with the correct password
+        /// <summary>
+        /// the user can enter a id of a carpool and join it with the correct password
+        /// </summary>
+        /// <param name="carpool"></param>
+        /// <param name="userName"></param>
+        public static void JoinCarpool(List<Carpool> carpool, string userName)
         {
             Console.Clear();
             Console.WriteLine("Enter the ID of the Carpool you want to join");
@@ -188,8 +203,7 @@ namespace Fahrgemeinschaftsapp
             {
                 if (ValidatePassword(fileName, carpoolPassword))
                 {
-                    string text = File.ReadAllText($@"C:\010Projects\019 Fahrgemeinschaft\Fahrgemeinschaftsapp\Carpools\{fileName}.csv").Replace("\r\n", string.Empty);
-                    string[] values = text.Split(';');
+                    string[] values = FileHandling.Read($@"C:\010Projects\019 Fahrgemeinschaft\Fahrgemeinschaftsapp\Carpools\{fileName}.csv");
                     List<string> passengers = new List<string>();
                     for (int i = 6; i < values.Length; i++)
                     {
@@ -245,7 +259,12 @@ namespace Fahrgemeinschaftsapp
             }
         }
 
-        public static void LeaveCarpool(List<Carpool> carpool, string userName) //the user can choose, which carpool he/she wants to leave
+        /// <summary>
+        /// the user can choose, which carpool he/she wants to leave
+        /// </summary>
+        /// <param name="carpool"></param>
+        /// <param name="userName"></param>
+        public static void LeaveCarpool(List<Carpool> carpool, string userName)
         {
             Console.Clear();
             Console.WriteLine("Enter the ID of the Carpool you want to leave");
@@ -316,7 +335,11 @@ namespace Fahrgemeinschaftsapp
             }
         }
 
-        public static void DeleteCarpool(string userName) //by entering the ID, the user can delete an existing carpool
+        /// <summary>
+        /// by entering the ID, the user can delete an existing carpool
+        /// </summary>
+        /// <param name="userName"></param>
+        public static void DeleteCarpool(string userName)
         {
             Console.Clear();
             Console.WriteLine("Please enter the ID of the carpool you want to delete");
@@ -368,18 +391,18 @@ namespace Fahrgemeinschaftsapp
             }
         }
 
-        public static bool ValidatePassword(string cpID, string inputPw) //checks if user input equals the password of th carpool
+        /// <summary>
+        /// checks if user input equals the password of th carpool
+        /// </summary>
+        /// <param name="cpID"></param>
+        /// <param name="inputPw"></param>
+        /// <returns></returns>
+        public static bool ValidatePassword(string cpID, string inputPw)
         {
             string tmpNewHash = Program.HashPassword(inputPw);
             bool bEqual = false;
-            string tmpHash;
-            using (StreamReader sr = new StreamReader($@"C:\010Projects\019 Fahrgemeinschaft\Fahrgemeinschaftsapp\Carpools\{cpID}.csv"))
-            {
-                var line = sr.ReadLine();
-                var values = line.Split(';');
-                tmpHash = values[4];
-                tmpHash = tmpHash.Replace("\r\n", string.Empty);
-            }
+            string[] values = FileHandling.Read($@"C:\010Projects\019 Fahrgemeinschaft\Fahrgemeinschaftsapp\Carpools\{cpID}.csv");
+            string tmpHash = values[4].Replace("\r\n", string.Empty);
             if (tmpNewHash.Length == tmpHash.Length)
             {
                 int i = 0;
