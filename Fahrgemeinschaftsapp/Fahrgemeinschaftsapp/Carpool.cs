@@ -43,7 +43,6 @@ namespace Fahrgemeinschaftsapp
             Console.WriteLine(" ");
             string startLoc = InputCheck.StringCheck("Where do you plan to start?");
             Console.WriteLine("");
-            Console.WriteLine("When do you plan to start?");
             DateTime departure = InputCheck.ValidTimeCheck("When do you plan to start?");
             int carpoolID = di.GetFiles().Length;
             string departureString = departure.ToShortTimeString();

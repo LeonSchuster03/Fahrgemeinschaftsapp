@@ -10,7 +10,7 @@ namespace Fahrgemeinschaftsapp
 {
     public class InputCheck
     {
-
+          
         /// <summary>
         /// Checks if input is only letters
         /// </summary>
@@ -33,7 +33,7 @@ namespace Fahrgemeinschaftsapp
         /// <param name="question"></param>
         /// <returns></returns>
         public static int NumberCheck(string question)
-        {
+        {  
             string answer;
             do
             {
@@ -89,13 +89,11 @@ namespace Fahrgemeinschaftsapp
         public static DateTime ValidTimeCheck(string question)
         {
             string answer;
-            Regex checktime =
-                    new Regex(@"^(?: 0?[0 - 9] | 1[0 - 9] | 2[0 - 3]):[0 - 5][0 - 9]$");
             do
             {
                 Console.WriteLine(question);
                 answer= Console.ReadLine();                
-            }while (!checktime.IsMatch(answer));
+            }while (!Regex.IsMatch(answer, "^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$"));
             return Convert.ToDateTime(answer);
         }
     }
