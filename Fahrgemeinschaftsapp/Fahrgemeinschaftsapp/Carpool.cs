@@ -193,7 +193,7 @@ namespace Fahrgemeinschaftsapp
             {
                 if (ValidatePassword(fileName, carpoolPassword))
                 {
-                    string[] values = FileHandling.Read($@"C:\010Projects\019 Fahrgemeinschaft\Fahrgemeinschaftsapp\Carpools\{fileName}.csv");
+                    string[] values = FileHandling.ReadCreateArray($@"C:\010Projects\019 Fahrgemeinschaft\Fahrgemeinschaftsapp\Carpools\{fileName}.csv");
                     List<string> passengers = new List<string>();
                     for (int i = 6; i < values.Length; i++)
                     {
@@ -390,7 +390,7 @@ namespace Fahrgemeinschaftsapp
         {
             string tmpNewHash = Program.HashPassword(inputPw);
             bool bEqual = false;
-            string[] values = FileHandling.Read($@"C:\010Projects\019 Fahrgemeinschaft\Fahrgemeinschaftsapp\Carpools\{cpID}.csv");
+            string[] values = FileHandling.ReadCreateArray($@"C:\010Projects\019 Fahrgemeinschaft\Fahrgemeinschaftsapp\Carpools\{cpID}.csv");
             string tmpHash = values[4].Replace("\r\n", string.Empty);
             if (tmpNewHash.Length == tmpHash.Length)
             {

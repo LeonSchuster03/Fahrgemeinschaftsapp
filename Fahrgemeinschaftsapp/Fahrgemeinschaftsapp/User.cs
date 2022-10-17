@@ -19,16 +19,16 @@ namespace Fahrgemeinschaftsapp
             public string EndPlace { get; set; }
             public bool HasCar { get; set; }
 
-        public User(string username, string   firstname, string lastname, int age, string gender, string startplace, string endplace, bool hascar)
+        public User(string userName, string   firstName, string lastName, int age, string gender, string startPlace, string endPlace, bool hasCar)
         {
-            Username = username;
-            FirstName = firstname;
-            LastName = lastname;
+            Username = userName;
+            FirstName = firstName;
+            LastName = lastName;
             Age = age;
             Gender = gender;
-            StartPlace = startplace;
-            EndPlace = endplace;
-            HasCar = hascar;
+            StartPlace = startPlace;
+            EndPlace = endPlace;
+            HasCar = hasCar;
         }
 
         /// <summary>
@@ -171,29 +171,31 @@ namespace Fahrgemeinschaftsapp
                 pw = reader.ReadLine();
             }
 
-            bool hascar = false;
+            bool hasCar = false;
             if (hasCarString == "y")
             {
-                hascar = true;
+                hasCar = true;
             }
             else if (hasCarString == "n")
             {
-                hascar = false;
+                hasCar = false;
             }
             using (StreamWriter writer = new StreamWriter($@"C:\010Projects\019 Fahrgemeinschaft\Fahrgemeinschaftsapp\Userlist\{userName}.csv"))
             {
-                var newLine = $"{userName};{firstName};{lastName};{Convert.ToString(age)};{gender};{startLocation};{destination};{pw};{hascar}";
+                var newLine = $"{userName};{firstName};{lastName};{Convert.ToString(age)};{gender};{startLocation};{destination};{pw};{hasCar}";
                 writer.WriteLine(newLine);
             }
-            userList.Add(new User(userName, firstName, lastName, age, gender, startLocation, destination, hascar));
+            userList.Add(new User(userName, firstName, lastName, age, gender, startLocation, destination, hasCar));
 
             Console.WriteLine(" ");
             Console.WriteLine("Saving the information in our database ...");
             Thread.Sleep(500);
             Console.Clear();
-            Console.WriteLine("Redirecting to Menu ...");
+            Console.WriteLine("Redirecting to LogIn ...");
             Thread.Sleep(500);
-        }
+            Console.Clear();
+            LogIn(userList);
+        }   
 
         /// <summary>
         /// by entering the old and new password, the user can change his/her password
@@ -220,7 +222,7 @@ namespace Fahrgemeinschaftsapp
                 string confirmNewPw = Program.HidePassword();
                 if (confirmNewPw == newPw)
                 {
-                    string[] values = FileHandling.Read($@"C:\010Projects\019 Fahrgemeinschaft\Fahrgemeinschaftsapp\Userlist\{userName}.csv");
+                    string[] values = FileHandling.ReadCreateArray($@"C:\010Projects\019 Fahrgemeinschaft\Fahrgemeinschaftsapp\Userlist\{userName}.csv");
                     values[7] = Program.HashPassword(newPw);
                     
                     using (StreamWriter writer = new StreamWriter($@"C:\010Projects\019 Fahrgemeinschaft\Fahrgemeinschaftsapp\Userlist\{userName}.csv"))
@@ -256,7 +258,7 @@ namespace Fahrgemeinschaftsapp
         /// <returns></returns>
         public static string ChangeUserName(string userName)
         {
-            string[] values = FileHandling.Read($@"C:\010Projects\019 Fahrgemeinschaft\Fahrgemeinschaftsapp\Userlist\{userName}.csv");
+            string[] values = FileHandling.ReadCreateArray($@"C:\010Projects\019 Fahrgemeinschaft\Fahrgemeinschaftsapp\Userlist\{userName}.csv");
             
             Console.WriteLine("Please enter your password");
             string inputPw = Program.HidePassword();
@@ -347,7 +349,7 @@ namespace Fahrgemeinschaftsapp
 
                 foreach (string file in Directory.EnumerateFiles($@"C:\010Projects\019 Fahrgemeinschaft\Fahrgemeinschaftsapp\Userlist\\\\"))
                 {
-                    string[] values = FileHandling.Read(file);
+                    string[] values = FileHandling.ReadCreateArray(file);
                     Console.WriteLine($"{values[1]} ({values[4]}/{values[3]}), Start: {values[5]}, Destination: {values[6]}");
                     
                 }
@@ -362,7 +364,7 @@ namespace Fahrgemeinschaftsapp
 
                 foreach (string file in Directory.EnumerateFiles($@"C:\010Projects\019 Fahrgemeinschaft\Fahrgemeinschaftsapp\Userlist\\\\"))
                 {
-                    string[] values = FileHandling.Read(file);
+                    string[] values = FileHandling.ReadCreateArray(file);
                     
                     if ((info[6] == values[6]) && (info[0] != values[0]))
                     {
@@ -393,7 +395,7 @@ namespace Fahrgemeinschaftsapp
                 Console.WriteLine("------------------------------------------------- ");
                 foreach (string fileUser in Directory.EnumerateFiles($@"C:\010Projects\019 Fahrgemeinschaft\Fahrgemeinschaftsapp\Userlist\\\\"))
                 {
-                    string[] values = FileHandling.Read(fileUser);
+                    string[] values = FileHandling.ReadCreateArray(fileUser);
 
                         if (values[8] == "TRUE")
                         {
@@ -404,14 +406,14 @@ namespace Fahrgemeinschaftsapp
             }
             else if (input == "2")
             {
-                string[] info = FileHandling.Read($@"C:\010Projects\019 Fahrgemeinschaft\Fahrgemeinschaftsapp\Userlist\{userName}.csv");
+                string[] info = FileHandling.ReadCreateArray($@"C:\010Projects\019 Fahrgemeinschaft\Fahrgemeinschaftsapp\Userlist\{userName}.csv");
                 Console.Clear();
                 Console.WriteLine($"Here are all drivers, who have {info[6]} as destination");
                 Console.WriteLine("------------------------------------------------- ");
                 foreach (string fileUser in Directory.EnumerateFiles($@"C:\010Projects\019 Fahrgemeinschaft\Fahrgemeinschaftsapp\Userlist\\\\"))
                 {
 
-                        string[] values = FileHandling.Read(fileUser);
+                        string[] values = FileHandling.ReadCreateArray(fileUser);
                         if ((info[6] == values[6]) && (info[0] != values[0]) && (values[8] == "TRUE"))
                         {
                             Console.WriteLine($"{values[1]} ({values[4]}/{values[3]}), Start: {values[5]}, Destination: {values[6]}");
@@ -435,7 +437,7 @@ namespace Fahrgemeinschaftsapp
             Console.WriteLine("Here are all the information we saved about you:");
             Console.WriteLine("------------------------------------------------- ");
 
-        string[] values = FileHandling.Read($@"C:\010Projects\019 Fahrgemeinschaft\Fahrgemeinschaftsapp\Userlist\{userName}.csv");
+        string[] values = FileHandling.ReadCreateArray($@"C:\010Projects\019 Fahrgemeinschaft\Fahrgemeinschaftsapp\Userlist\{userName}.csv");
 
                 Console.WriteLine($"Username:       {values[0]}");
                 Console.WriteLine($"First name:     {values[1]}");
@@ -490,7 +492,7 @@ namespace Fahrgemeinschaftsapp
 
             string input = Console.ReadLine();
 
-            string[] values = FileHandling.Read($@"C:\010Projects\019 Fahrgemeinschaft\Fahrgemeinschaftsapp\Userlist\{userName}.csv");
+            string[] values = FileHandling.ReadCreateArray($@"C:\010Projects\019 Fahrgemeinschaft\Fahrgemeinschaftsapp\Userlist\{userName}.csv");
             Console.Clear();
             bool goToMenu = false;
             bool goBack = false;
@@ -578,7 +580,7 @@ namespace Fahrgemeinschaftsapp
             Console.Clear();
             Console.WriteLine("Please enter your password");
             string inputPw = Program.HidePassword();
-            string[] values = FileHandling.Read($@"C:\010Projects\019 Fahrgemeinschaft\Fahrgemeinschaftsapp\Userlist\{userName}.csv");
+            string[] values = FileHandling.ReadCreateArray($@"C:\010Projects\019 Fahrgemeinschaft\Fahrgemeinschaftsapp\Userlist\{userName}.csv");
             string userPw = values[7].Replace("\r\n", string.Empty);
 
             if (ValidatePassword(userName, inputPw))
@@ -655,7 +657,7 @@ namespace Fahrgemeinschaftsapp
             string tmpHash;
 
            
-                string[] values = FileHandling.Read($@"C:\010Projects\019 Fahrgemeinschaft\Fahrgemeinschaftsapp\Userlist\{userName}.csv");
+                string[] values = FileHandling.ReadCreateArray($@"C:\010Projects\019 Fahrgemeinschaft\Fahrgemeinschaftsapp\Userlist\{userName}.csv");
                 tmpHash = values[7];
                 tmpHash = tmpHash.Replace("\r\n", string.Empty);
            
