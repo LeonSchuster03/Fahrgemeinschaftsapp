@@ -57,14 +57,19 @@ namespace TecAlliance.Carpool.Business.Services
 
         public List<UserDto> GetAllUsers()
         {
-            List<UserDto> usersDto = new List<UserDto>();
-            List<User> users = userDataServices.GetAllUsers();
-            foreach (User user in users)
+            List<UserDto> userDtoList = new List<UserDto>();
+            List<User> userList = userDataServices.GetAllUsers();
+            foreach (User user in userList)
             {
                 UserDto userdto = new UserDto(user.Id, user.UserName, user.FirstName, user.LastName, user.Age, user.Gender, user.StartPlace, user.EndPlace, user.HasCar);
-                usersDto.Add(userdto);
+                userDtoList.Add(userdto);
             }
-            return usersDto;
+            return userDtoList;
+        }
+        
+        public void DeleteUser(long id)
+        {
+            userDataServices.DeleteUserFromFile(id);            
         }
     }
 }

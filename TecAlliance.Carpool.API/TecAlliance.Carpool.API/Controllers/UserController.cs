@@ -35,5 +35,12 @@ namespace TecAlliance.Carpool.API.Controllers
         {
             return businessServices.GetAllUsers();
         }
+
+        [HttpDelete("{id}")]
+        public ActionResult<UserDto> DeleteUser(long id)
+        {
+            businessServices.DeleteUser(id);
+            return StatusCode(200);
+        }
     }
 }

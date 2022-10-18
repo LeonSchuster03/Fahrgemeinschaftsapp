@@ -23,12 +23,12 @@ namespace TecAlliance.Carpool.Data.Service
 
         public List<User> GetAllUsers()
         {
-            List<User> users = new List<User>();
+            List<User> userList = new List<User>();
             foreach(string file in Directory.EnumerateFiles($"C:\\010Projects\\019 Fahrgemeinschaft\\Fahrgemeinschaftsapp\\Userlist\\"))
             {
-                users.Add(BuildUserFromFile(file));               
+                userList.Add(BuildUserFromFile(file));               
             }
-            return users;
+            return userList;
         }
 
         public User BuildUserFromFile(string path)
@@ -39,5 +39,16 @@ namespace TecAlliance.Carpool.Data.Service
             return user;            
         }
 
+        public void DeleteUserFromFile(long id)
+        {
+            foreach(string file in Directory.EnumerateFiles($"C:\\010Projects\\019 Fahrgemeinschaft\\Fahrgemeinschaftsapp\\Userlist\\"))
+            {
+                User user = BuildUserFromFile(file);
+                if(user.Id == id)
+                {
+                    File.Delete(file);
+                }
+            }
+        }
     }
 }
