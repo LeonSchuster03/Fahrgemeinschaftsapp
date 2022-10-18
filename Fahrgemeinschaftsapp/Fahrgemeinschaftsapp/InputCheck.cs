@@ -6,7 +6,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace Fahrgemeinschaftsapp
+namespace TecAlliance.Carpool.Models
 {
     public class InputCheck
     {

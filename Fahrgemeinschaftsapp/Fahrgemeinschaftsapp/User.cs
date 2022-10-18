@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Fahrgemeinschaftsapp
+namespace TecAlliance.Carpool.Models
 {
     public class User
     {

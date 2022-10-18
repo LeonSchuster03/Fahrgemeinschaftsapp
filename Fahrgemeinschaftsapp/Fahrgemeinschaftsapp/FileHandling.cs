@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Fahrgemeinschaftsapp
+namespace TecAlliance.Carpool.Models
 {
     public class FileHandling
     {

@@ -5,6 +5,8 @@ VisualStudioVersion = 17.3.32825.248
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fahrgemeinschaftsapp", "Fahrgemeinschaftsapp\Fahrgemeinschaftsapp.csproj", "{C468D724-F2D1-4FEB-97B8-E3E66AEEB0E0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TecAlliance.Carpool.Api", "Fahrgemeinschaftsapp API\TecAlliance.Carpool.Api.csproj", "{B873480F-D58A-4067-BA53-70E87B764E5A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{C468D724-F2D1-4FEB-97B8-E3E66AEEB0E0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C468D724-F2D1-4FEB-97B8-E3E66AEEB0E0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C468D724-F2D1-4FEB-97B8-E3E66AEEB0E0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B873480F-D58A-4067-BA53-70E87B764E5A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B873480F-D58A-4067-BA53-70E87B764E5A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B873480F-D58A-4067-BA53-70E87B764E5A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B873480F-D58A-4067-BA53-70E87B764E5A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

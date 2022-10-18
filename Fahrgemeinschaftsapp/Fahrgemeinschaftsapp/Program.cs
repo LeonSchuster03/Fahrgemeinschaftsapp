@@ -20,10 +20,10 @@ using File = System.IO.File;
 using System.Security.Cryptography;
 using System.Runtime.Remoting.Messaging;
 
-namespace Fahrgemeinschaftsapp
+namespace TecAlliance.Carpool.Models
 {
     internal class Program
-    {
+    {  
         static void Main(string[] args)
         {
             Console.Title = "Carpool App by Leon";
