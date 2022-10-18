@@ -23,5 +23,17 @@ namespace TecAlliance.Carpool.API.Controllers
             
             return Created($"api/User/{userDto.Id}", userDto); 
         }
+
+        [HttpGet("{id}")]
+        public ActionResult<UserDto> GetUserById(long id)
+        {
+            return businessServices.GetUserById(id);
+        }
+
+        [HttpGet]
+        public ActionResult<List<UserDto>> GetAllUsers()
+        {
+            return businessServices.GetAllUsers();
+        }
     }
 }

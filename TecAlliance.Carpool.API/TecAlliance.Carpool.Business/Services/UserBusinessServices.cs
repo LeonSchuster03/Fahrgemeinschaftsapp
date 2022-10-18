@@ -36,7 +36,35 @@ namespace TecAlliance.Carpool.Business.Services
                     break;
                 }
             } while (true);
+
             return id;
+        }
+
+        public UserDto GetUserById(long id)
+        {
+            UserDto userdto;
+            List<User> users = userDataServices.GetAllUsers();
+            foreach(User user in users)
+            {
+                if(user.Id == id)
+                {
+                    userdto = new UserDto(user.Id, user.UserName, user.FirstName, user.LastName, user.Age, user.Gender, user.StartPlace, user.EndPlace, user.HasCar);
+                    return userdto;
+                }
+            }
+            throw new Exception("User not found");                        
+        }
+
+        public List<UserDto> GetAllUsers()
+        {
+            List<UserDto> usersDto = new List<UserDto>();
+            List<User> users = userDataServices.GetAllUsers();
+            foreach (User user in users)
+            {
+                UserDto userdto = new UserDto(user.Id, user.UserName, user.FirstName, user.LastName, user.Age, user.Gender, user.StartPlace, user.EndPlace, user.HasCar);
+                usersDto.Add(userdto);
+            }
+            return usersDto;
         }
     }
 }
