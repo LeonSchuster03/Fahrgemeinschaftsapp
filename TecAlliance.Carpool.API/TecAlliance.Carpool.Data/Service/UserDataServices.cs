@@ -12,13 +12,10 @@ namespace TecAlliance.Carpool.Data.Service
 {
     public class UserDataServices
     {
-        public void AddUserToCsv(User user)
+        public void CreateUser(User user)
         {
-            using (StreamWriter writer = new StreamWriter($"C:\\010Projects\\019 Fahrgemeinschaft\\Fahrgemeinschaftsapp\\Userlist\\{user.Id}.csv"))
-            {
-                var newLine = $"{user.Id};{user.UserName};{user.FirstName};{user.LastName};{user.Age};{user.Gender};{user.StartPlace};{user.EndPlace};{user.HasCar}";
-                writer.WriteLine(newLine);
-            }
+            using (FileStream fs = File.Create($"C:\\010Projects\\019 Fahrgemeinschaft\\Fahrgemeinschaftsapp\\Userlist\\{user.Id}.csv")) ;
+            PrintUserInfoToFile(user);
         }
 
         public List<User> GetAllUsers()
@@ -39,6 +36,11 @@ namespace TecAlliance.Carpool.Data.Service
             return user;            
         }
 
+        public void UpdateUser(User user)
+        {
+            PrintUserInfoToFile(user);
+        }
+
         public void DeleteUserFromFile(long id)
         {
             foreach(string file in Directory.EnumerateFiles($"C:\\010Projects\\019 Fahrgemeinschaft\\Fahrgemeinschaftsapp\\Userlist\\"))
@@ -48,6 +50,15 @@ namespace TecAlliance.Carpool.Data.Service
                 {
                     File.Delete(file);
                 }
+            }
+        }
+
+        public void PrintUserInfoToFile(User user)
+        {
+            using (StreamWriter writer = new StreamWriter($"C:\\010Projects\\019 Fahrgemeinschaft\\Fahrgemeinschaftsapp\\Userlist\\{user.Id}.csv"))
+            {
+                var newLine = $"{user.Id};{user.UserName};{user.FirstName};{user.LastName};{user.Age};{user.Gender};{user.StartPlace};{user.EndPlace};{user.HasCar}";
+                writer.WriteLine(newLine);
             }
         }
     }

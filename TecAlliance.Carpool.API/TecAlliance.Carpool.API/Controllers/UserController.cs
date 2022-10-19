@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using TecAlliance.Carpool.Business.Services;
 using TecAlliance.Carpool.Business.Models;
+using System.Data.Common;
 
 namespace TecAlliance.Carpool.API.Controllers
 {
@@ -28,6 +29,13 @@ namespace TecAlliance.Carpool.API.Controllers
         public ActionResult<UserDto> GetUserById(long id)
         {
             return businessServices.GetUserById(id);
+        }
+
+        [HttpPut("{id}")]
+        public ActionResult<UserDto> UpdateUser(UserDto userDto)
+        {
+            businessServices.UpdateUser(userDto);
+            return userDto;
         }
 
         [HttpGet]

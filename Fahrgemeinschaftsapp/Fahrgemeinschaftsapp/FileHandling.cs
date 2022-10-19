@@ -16,7 +16,7 @@ namespace TecAlliance.Carpool.Models
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
-        public   static string[] ReadCreateArray(string path)
+        public static string[] ReadCreateArray(string path)
         {
             string[] values = null;
             using (var reader = new StreamReader(path))

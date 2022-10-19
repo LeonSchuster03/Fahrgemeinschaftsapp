@@ -16,23 +16,22 @@ namespace TecAlliance.Carpool.Business.Services
       
         public void CreateUser(UserDto userDto)
         {
-            var user = new User(userDto.Id, userDto.UserName, userDto.FirstName, userDto.LastName, userDto.Age, userDto.Gender, userDto.StartPlace, userDto.EndPlace, userDto.HasCar);
-            userDataServices.AddUserToCsv(user);
+            var user = ConvertUserDtoToUser(userDto);
+            //userDataServices.AddUserToCsv(user);
+            userDataServices.PrintUserInfoToFile(user);
         }
 
         public long GetId()
         {
             long id = 0;
             do {
-                FileInfo fi = new FileInfo($"C:\\010Projects\\019 Fahrgemeinschaft\\Fahrgemeinschaftsapp\\Userlist\\{id}.csv");
-                
+                FileInfo fi = new FileInfo($"C:\\010Projects\\019 Fahrgemeinschaft\\Fahrgemeinschaftsapp\\Userlist\\{id}.csv");                
                 if (fi.Exists)
                 {
                     id++;
                 }
                 else
-                {
-                    using (FileStream fs = File.Create($"C:\\010Projects\\019 Fahrgemeinschaft\\Fahrgemeinschaftsapp\\Userlist\\{id}.csv"));
+                {                    
                     break;
                 }
             } while (true);
@@ -42,14 +41,14 @@ namespace TecAlliance.Carpool.Business.Services
 
         public UserDto GetUserById(long id)
         {
-            UserDto userdto;
+            
             List<User> users = userDataServices.GetAllUsers();
             foreach(User user in users)
             {
                 if(user.Id == id)
                 {
-                    userdto = new UserDto(user.Id, user.UserName, user.FirstName, user.LastName, user.Age, user.Gender, user.StartPlace, user.EndPlace, user.HasCar);
-                    return userdto;
+                    UserDto userDto = ConvertUserToUserDto(user);
+                    return userDto;
                 }
             }
             throw new Exception("User not found");                        
@@ -61,15 +60,43 @@ namespace TecAlliance.Carpool.Business.Services
             List<User> userList = userDataServices.GetAllUsers();
             foreach (User user in userList)
             {
-                UserDto userdto = new UserDto(user.Id, user.UserName, user.FirstName, user.LastName, user.Age, user.Gender, user.StartPlace, user.EndPlace, user.HasCar);
-                userDtoList.Add(userdto);
+                UserDto userDto = ConvertUserToUserDto(user);
+                userDtoList.Add(userDto);
             }
             return userDtoList;
+        }
+        
+        public void UpdateUser(UserDto userDto)
+        {
+            FileInfo fi = new FileInfo($"C:\\010Projects\\019 Fahrgemeinschaft\\Fahrgemeinschaftsapp\\Userlist\\{userDto.Id}.csv");
+            if (fi.Exists)
+            {
+                User user = ConvertUserDtoToUser(userDto);
+                userDataServices.PrintUserInfoToFile(user);
+            }
+            else
+            {
+                throw new Exception("User not found");
+            }
+
+            //userDataServices.UpdateUser(user);
         }
         
         public void DeleteUser(long id)
         {
             userDataServices.DeleteUserFromFile(id);            
+        }
+
+        public UserDto ConvertUserToUserDto(User user)
+        {
+            var userDto = new UserDto(user.Id, user.UserName, user.FirstName, user.LastName, user.Age, user.Gender, user.StartPlace, user.EndPlace, user.HasCar);
+            return userDto;
+        }
+
+        public User ConvertUserDtoToUser(UserDto userDto)
+        {
+            var user = new User(userDto.Id, userDto.UserName, userDto.FirstName, userDto.LastName, userDto.Age, userDto.Gender, userDto.StartPlace, userDto.EndPlace, userDto.HasCar);
+            return user;
         }
     }
 }
