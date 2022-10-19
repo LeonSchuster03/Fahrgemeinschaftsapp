@@ -57,6 +57,27 @@ namespace TecAlliance.Carpool.Data.Services
             return carpoolList;
         }
 
+        public void UpdateCarpoolUnit(CarpoolUnit carpoolUnit)
+        {
+            DeleteCarpoolUnitFromFile(carpoolUnit.Id);
+            PrintCarpoolUnitToFile(carpoolUnit);
+        }
+
+        public void DeleteCarpoolUnitFromFile(long id)
+        {
+            string[] lines = File.ReadAllLines($"C:\\010Projects\\019 Fahrgemeinschaft\\Fahrgemeinschaftsapp\\CarpoolList.csv");
+            List<string> linesToWrite = new List<string>();
+
+            foreach(string s in lines)
+            {
+                if (!s.Contains($"{id};"))
+                {
+                    linesToWrite.Add(s);
+                }
+            }
+            File.WriteAllLines($"C:\\010Projects\\019 Fahrgemeinschaft\\Fahrgemeinschaftsapp\\CarpoolList.csv", linesToWrite);
+        }
+
         public CarpoolUnit? BuildCarpoolUnitFromLine(string line)
         {
             if(line != null)

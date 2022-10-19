@@ -28,13 +28,13 @@ namespace TecAlliance.Carpool.API.Controllers
         [HttpGet("{id}")]
         public ActionResult<CarpoolUnitDto> GetCarpoolUnitById(long id)
         {
-            if(businessServices.GetCarpoolUnitById(id) == null)
+            if(businessServices.GetCarpoolUnitById(id) != null)
             {
-                return StatusCode(404);
+                return businessServices.GetCarpoolUnitById(id);
             }
             else
             {
-                return businessServices.GetCarpoolUnitById(id);
+                return StatusCode(404);
             }
         }
 
@@ -42,6 +42,26 @@ namespace TecAlliance.Carpool.API.Controllers
         public ActionResult<List<CarpoolUnitDto>> GetAllCarpoolUnits()
         {
             return businessServices.GetAllCarpoolUnits();
+        }
+
+        [HttpPut("{id}")]
+        public ActionResult<CarpoolUnitDto> UpdateCarpoolUnit(CarpoolUnitDto carpoolUnitDto)
+        {
+            businessServices.UpdateCarpoolUnit(carpoolUnitDto);
+            return carpoolUnitDto;
+        }
+
+        [HttpDelete("{id}")]
+        public ActionResult<CarpoolUnitDto> DeleteCarpoolUnit(long id)
+        {
+            if (businessServices.DeleteCarpoolUnit(id))
+            {
+                return StatusCode(204);
+            }
+            else
+            {
+                return StatusCode(404);
+            }
         }
     }
 }

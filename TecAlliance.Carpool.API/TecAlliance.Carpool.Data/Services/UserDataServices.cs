@@ -34,7 +34,7 @@ namespace TecAlliance.Carpool.Data.Service
             //Builds User
             foreach(string userText in fileText)
             {
-                User user = BuildUserFromLine(userText);
+                User? user = BuildUserFromLine(userText);
                 userList.Add(user);
             }
             return userList;

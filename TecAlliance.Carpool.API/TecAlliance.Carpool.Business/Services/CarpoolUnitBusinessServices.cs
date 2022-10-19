@@ -41,11 +41,36 @@ namespace TecAlliance.Carpool.Business.Services
             foreach(CarpoolUnit carpoolUnit in carpoolUnits)
             {
                 CarpoolUnitDto carpoolUnitDto = ConvertCarpoolUnitToCarpoolUnitDto(carpoolUnit);
-                carpoolUnitDtoList.Add(carpoolUnitDto);
+                carpoolUnitDtoList.Add(carpoolUnitDto);  
             }
             return carpoolUnitDtoList;
         }
         
+        public void UpdateCarpoolUnit(CarpoolUnitDto carpoolUnitDto)
+        {
+            CarpoolUnit carpoolUnit = ConvertCarpoolUnitDtoToCarpoolUnit(carpoolUnitDto);
+            if (CheckIfCarpoolUnitExists(carpoolUnit.Id))
+            {
+                carpoolUnitDataServices.UpdateCarpoolUnit(carpoolUnit);
+            }
+            else
+            {
+                throw new Exception();
+            }
+        }
+
+        public bool DeleteCarpoolUnit(long id)
+        {
+            if (CheckIfCarpoolUnitExists(id))
+            {
+                carpoolUnitDataServices.DeleteCarpoolUnitFromFile(id);
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
 
         public bool CheckIfCarpoolUnitExists(long id)
         {
