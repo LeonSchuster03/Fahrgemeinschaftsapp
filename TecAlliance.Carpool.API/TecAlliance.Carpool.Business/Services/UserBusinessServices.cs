@@ -8,7 +8,7 @@ namespace TecAlliance.Carpool.Business.Services
     public class UserBusinessServices
     {
         UserDataServices userDataServices;
-
+        
         public UserBusinessServices()
         {
             userDataServices = new UserDataServices();
@@ -18,21 +18,20 @@ namespace TecAlliance.Carpool.Business.Services
         {
             var user = ConvertUserDtoToUser(userDto);
             //userDataServices.AddUserToCsv(user);
-            userDataServices.PrintUserInfoToFile(user);
+            userDataServices.CreateUser(user);
         }
 
         public long GetId()
         {
             long id = 0;
-            do {
-                FileInfo fi = new FileInfo($"C:\\010Projects\\019 Fahrgemeinschaft\\Fahrgemeinschaftsapp\\Userlist\\{id}.csv");                
-                if (fi.Exists)
+            do {             
+                if (!userDataServices.CheckIfUserExists(id))
                 {
-                    id++;
+                    break;
                 }
                 else
-                {                    
-                    break;
+                {
+                    id++;
                 }
             } while (true);
 
@@ -40,8 +39,7 @@ namespace TecAlliance.Carpool.Business.Services
         }
 
         public UserDto GetUserById(long id)
-        {
-            
+        {            
             List<User> users = userDataServices.GetAllUsers();
             foreach(User user in users)
             {
@@ -68,23 +66,27 @@ namespace TecAlliance.Carpool.Business.Services
         
         public void UpdateUser(UserDto userDto)
         {
-            FileInfo fi = new FileInfo($"C:\\010Projects\\019 Fahrgemeinschaft\\Fahrgemeinschaftsapp\\Userlist\\{userDto.Id}.csv");
-            if (fi.Exists)
-            {
-                User user = ConvertUserDtoToUser(userDto);
+            User user = ConvertUserDtoToUser(userDto);
+            if (userDataServices.CheckIfUserExists(user.Id))
+            {               
                 userDataServices.PrintUserInfoToFile(user);
             }
             else
             {
                 throw new Exception("User not found");
             }
-
-            //userDataServices.UpdateUser(user);
         }
         
         public void DeleteUser(long id)
         {
-            userDataServices.DeleteUserFromFile(id);            
+            if (userDataServices.CheckIfUserExists(id))
+            {
+                userDataServices.DeleteUserFromFile(id);
+            }
+            else
+            {
+                throw new Exception("User not found");
+            }            
         }
 
         public UserDto ConvertUserToUserDto(User user)

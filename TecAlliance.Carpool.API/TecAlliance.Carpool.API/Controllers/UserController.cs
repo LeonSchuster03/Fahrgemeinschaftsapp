@@ -6,7 +6,7 @@ using System.Data.Common;
 
 namespace TecAlliance.Carpool.API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/UserController")]
     [ApiController]
     public class UserController : ControllerBase
     {
@@ -22,13 +22,19 @@ namespace TecAlliance.Carpool.API.Controllers
             userDto.Id = businessServices.GetId();
             businessServices.CreateUser(userDto);
             
-            return Created($"api/User/{userDto.Id}", userDto); 
+            return Created($"api/UserController/{userDto.Id}", userDto); 
         }
 
         [HttpGet("{id}")]
         public ActionResult<UserDto> GetUserById(long id)
         {
             return businessServices.GetUserById(id);
+        }
+
+        [HttpGet]
+        public ActionResult<List<UserDto>> GetAllUsers()
+        {
+            return businessServices.GetAllUsers();
         }
 
         [HttpPut("{id}")]
@@ -38,13 +44,7 @@ namespace TecAlliance.Carpool.API.Controllers
             return userDto;
         }
 
-        [HttpGet]
-        public ActionResult<List<UserDto>> GetAllUsers()
-        {
-            return businessServices.GetAllUsers();
-        }
-
-        [HttpDelete("{id}")]
+       [HttpDelete("{id}")]
         public ActionResult<UserDto> DeleteUser(long id)
         {
             businessServices.DeleteUser(id);
