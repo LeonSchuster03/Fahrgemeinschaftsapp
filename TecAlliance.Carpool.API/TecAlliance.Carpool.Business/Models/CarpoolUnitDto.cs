@@ -13,9 +13,9 @@ namespace TecAlliance.Carpool.Business.Models
         public string Destination { get; set; }
         public string StartLocation { get; set; }
         public string Departure { get; set; }
-        public long[] Passengers { get; set; }
+        public List<long> Passengers { get; set; }
 
-        public CarpoolUnitDto(long id, int passengercount, string destination, string startlocation, string departure, long[] passengers)
+        public CarpoolUnitDto(long id, int passengercount, string destination, string startlocation, string departure, List<long> passengers)
         {
             Id = id;
             PassengerCount = passengercount;

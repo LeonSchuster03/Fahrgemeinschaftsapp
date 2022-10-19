@@ -18,10 +18,11 @@ namespace TecAlliance.Carpool.Business.Services
         }
         public long GetId()
         {
+            //File.Create("C:\\010Projects\\019 Fahrgemeinschaft\\Fahrgemeinschaftsapp\\CarpoolList.csv");
             long id = 0;
             do
             {
-                if (!carpoolUnitDataServices.CheckIfCarpoolUnitExists(id))
+                if (!CheckIfCarpoolUnitExists(id))
                 {
                     break;
                 }
@@ -33,10 +34,48 @@ namespace TecAlliance.Carpool.Business.Services
             return id;
         }
 
+        public List<CarpoolUnitDto> GetAllCarpoolUnits()
+        {
+            List<CarpoolUnitDto> carpoolUnitDtoList = new List<CarpoolUnitDto>();
+            List<CarpoolUnit> carpoolUnits = carpoolUnitDataServices.CreateCarpoolUnitListFromFile();
+            foreach(CarpoolUnit carpoolUnit in carpoolUnits)
+            {
+                CarpoolUnitDto carpoolUnitDto = ConvertCarpoolUnitToCarpoolUnitDto(carpoolUnit);
+                carpoolUnitDtoList.Add(carpoolUnitDto);
+            }
+            return carpoolUnitDtoList;
+        }
+        
+
+        public bool CheckIfCarpoolUnitExists(long id)
+        {
+            if (carpoolUnitDataServices.FilterCarpoolUnitListForSpecificCarpoolUnit(id) != null)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
         public void CreateCarpoolUnit(CarpoolUnitDto carpoolUnitDto)
         {
             var carpoolUnit = ConvertCarpoolUnitDtoToCarpoolUnit(carpoolUnitDto);
-            carpoolUnitDataServices.CreateCarpoolUnit(carpoolUnit);
+            carpoolUnitDataServices.PrintCarpoolUnitToFile(carpoolUnit);
+        }
+        public CarpoolUnitDto? GetCarpoolUnitById(long id)
+        {
+            CarpoolUnit carpoolUnit = carpoolUnitDataServices.FilterCarpoolUnitListForSpecificCarpoolUnit(id);
+            CarpoolUnitDto carpoolUnitDto = ConvertCarpoolUnitToCarpoolUnitDto(carpoolUnit);
+            if(carpoolUnitDto != null)
+            {
+                return carpoolUnitDto;
+            }
+            else
+            {
+                return null;
+            }                        
         }
 
         public CarpoolUnit ConvertCarpoolUnitDtoToCarpoolUnit(CarpoolUnitDto carpoolDto)
@@ -44,13 +83,11 @@ namespace TecAlliance.Carpool.Business.Services
             var carpoolUnit = new CarpoolUnit(carpoolDto.Id, carpoolDto.PassengerCount, carpoolDto.Destination, carpoolDto.StartLocation, carpoolDto.Departure, carpoolDto.Passengers);
             return carpoolUnit;
         }
+
         public CarpoolUnitDto ConvertCarpoolUnitToCarpoolUnitDto(CarpoolUnit carpool)
         {
             var carpoolUnitDto = new CarpoolUnitDto(carpool.Id, carpool.PassengerCount, carpool.Destination, carpool.StartLocation, carpool.Departure, carpool.Passengers);
             return carpoolUnitDto;
         }
     }
-
-
-    
 }

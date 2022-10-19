@@ -16,12 +16,32 @@ namespace TecAlliance.Carpool.API.Controllers
         }
 
         [HttpPost]
-        public ActionResult<CarpoolUnitDto> PosCarpoolUnitDto(CarpoolUnitDto carpoolDto)
+        public ActionResult<CarpoolUnitDto> PostCarpoolUnitDto(CarpoolUnitDto carpoolDto)
         {
+            
             carpoolDto.Id = businessServices.GetId();
             businessServices.CreateCarpoolUnit(carpoolDto);
 
             return Created($"api/CarpoolUnitController/{carpoolDto.Id}", carpoolDto);
+        }
+
+        [HttpGet("{id}")]
+        public ActionResult<CarpoolUnitDto> GetCarpoolUnitById(long id)
+        {
+            if(businessServices.GetCarpoolUnitById(id) == null)
+            {
+                return StatusCode(404);
+            }
+            else
+            {
+                return businessServices.GetCarpoolUnitById(id);
+            }
+        }
+
+        [HttpGet]
+        public ActionResult<List<CarpoolUnitDto>> GetAllCarpoolUnits()
+        {
+            return businessServices.GetAllCarpoolUnits();
         }
     }
 }
