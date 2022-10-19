@@ -11,7 +11,7 @@ namespace TecAlliance.Carpool.Data.Services
     {
         public bool CheckIfCarpoolUnitExists(long id)
         {
-            FileInfo fi = new FileInfo($"C:\\010Projects\\019 Fahrgemeinschaft\\Fahrgemeinschaftsapp\\CrpoolList\\{id}.csv");
+            FileInfo fi = new FileInfo($"C:\\010Projects\\019 Fahrgemeinschaft\\Fahrgemeinschaftsapp\\CarpoolUnitList\\{id}.csv");
             if (fi.Exists)
             {
                 return true;
