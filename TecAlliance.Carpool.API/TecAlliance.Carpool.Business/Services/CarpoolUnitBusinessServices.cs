@@ -45,6 +45,34 @@ namespace TecAlliance.Carpool.Business.Services
             }
             return carpoolUnitDtoList;
         }
+
+        public List<long> GetUsersInCarpool(long id)
+        {
+            CarpoolUnitDto carpoolUnitDto = SelectSpecificCarpool(id);
+            if(carpoolUnitDto == null)
+            {
+                return null;
+            }
+            List<long> usersInCarpoolList = carpoolUnitDto.Passengers;
+            return usersInCarpoolList;
+
+
+        }
+
+        public CarpoolUnitDto SelectSpecificCarpool(long id)
+        {
+            CarpoolUnitDto selectedCarpoolUnitDto; 
+            List<CarpoolUnitDto> carpoolUnitDtoList = GetAllCarpoolUnits();
+            foreach(CarpoolUnitDto carpoolUnitDto in carpoolUnitDtoList)
+            {
+                if(carpoolUnitDto.Id == id)
+                {
+                    selectedCarpoolUnitDto = carpoolUnitDto;
+                    return selectedCarpoolUnitDto;
+                }
+            }
+            return null;
+        }
         
         public void UpdateCarpoolUnit(CarpoolUnitDto carpoolUnitDto)
         {

@@ -13,6 +13,11 @@ namespace TecAlliance.Carpool.Data.Service
 {
     public class UserDataServices
     {
+        /// <summary>
+        /// Splits string, creates User object and returns it
+        /// </summary>
+        /// <param name="line"></param>
+        /// <returns></returns>
         public User? BuildUserFromLine(string line)
         {
             if(line != null)
@@ -26,6 +31,11 @@ namespace TecAlliance.Carpool.Data.Service
                 return null;
             }
         }
+
+        /// <summary>
+        /// Reads file and creates a list of all existing users
+        /// </summary>
+        /// <returns></returns>
         public List<User> CreateUserListFromFile()
         {
             List<User> userList = new List<User>();
@@ -40,12 +50,20 @@ namespace TecAlliance.Carpool.Data.Service
             return userList;
         }
         
+        /// <summary>
+        /// Replaces users' old information with the new information
+        /// </summary>
+        /// <param name="user"></param>
         public void UpdateUser(User user)
         {
             DeleteUserFromFile(user.Id);
             PrintUserInfoToFile(user);
         }
 
+        /// <summary>
+        /// Removes user from file
+        /// </summary>
+        /// <param name="id"></param>
         public void DeleteUserFromFile(long id)
         {
             string[] lines = File.ReadAllLines($"C:\\010Projects\\019 Fahrgemeinschaft\\Fahrgemeinschaftsapp\\Userlist.csv");
@@ -61,12 +79,21 @@ namespace TecAlliance.Carpool.Data.Service
             File.WriteAllLines($"C:\\010Projects\\019 Fahrgemeinschaft\\Fahrgemeinschaftsapp\\Userlist.csv", linesToWrite);
         }
 
+        /// <summary>
+        /// Prints information of a user to the file
+        /// </summary>
+        /// <param name="user"></param>
         public void PrintUserInfoToFile(User user)
         {
                 var newLine = $"{user.Id};{user.UserName};{user.FirstName};{user.LastName};{user.Age};{user.Gender};{user.StartPlace};{user.EndPlace};{user.HasCar}\n";
                 File.AppendAllText($"C:\\010Projects\\019 Fahrgemeinschaft\\Fahrgemeinschaftsapp\\Userlist.csv", newLine);
         }
 
+        /// <summary>
+        /// filters user with specific Id out of the Userlist
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public User? FilterUserListForSpecificUser(long id)
         {
             List<User> userList = CreateUserListFromFile();

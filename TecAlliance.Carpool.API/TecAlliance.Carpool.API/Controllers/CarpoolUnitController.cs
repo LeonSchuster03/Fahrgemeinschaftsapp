@@ -30,7 +30,7 @@ namespace TecAlliance.Carpool.API.Controllers
         {
             if(businessServices.GetCarpoolUnitById(id) != null)
             {
-                return businessServices.GetCarpoolUnitById(id);
+                return businessServices.GetCarpoolUnitById(id);   
             }
             else
             {
@@ -42,6 +42,19 @@ namespace TecAlliance.Carpool.API.Controllers
         public ActionResult<List<CarpoolUnitDto>> GetAllCarpoolUnits()
         {
             return businessServices.GetAllCarpoolUnits();
+        }
+
+        [HttpGet("GetUserInCarpool/{id}")]
+        public ActionResult<List<long>> GetUsersInCarpool(long id)
+        {
+            if(businessServices.GetUsersInCarpool(id) != null)
+            {
+                return businessServices.GetUsersInCarpool(id);
+            }
+            else
+            {
+                return null;
+            }
         }
 
         [HttpPut("{id}")]
@@ -63,5 +76,6 @@ namespace TecAlliance.Carpool.API.Controllers
                 return StatusCode(404);
             }
         }
+        
     }
 }

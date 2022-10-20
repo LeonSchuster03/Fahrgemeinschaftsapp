@@ -84,9 +84,9 @@ namespace TecAlliance.Carpool.Data.Services
             {
                 string[] info = line.Split(";");
                 List<long> people = new List<long>();
-                for (int i = 5; i < info.Length-5; i++)
+                for (int i = 5; i < info.Length; i++)
                 {
-                     people.Append(long.Parse(info[i]));
+                     people.Add(long.Parse(info[i]));
                 }
                 CarpoolUnit carpoolUnit = new CarpoolUnit(long.Parse(info[0]), Convert.ToInt32(info[1]), info[2], info[3], info[4], people);
                 return carpoolUnit;

@@ -16,6 +16,11 @@ namespace TecAlliance.Carpool.API.Controllers
             businessServices = new UserBusinessServices();
         }
 
+        /// <summary>
+        /// Creates a User
+        /// </summary>
+        /// <param name="userDto"></param>
+        /// <returns></returns>
         [HttpPost]
         public ActionResult<UserDto> PostUserDto(UserDto userDto)
         {
@@ -26,6 +31,11 @@ namespace TecAlliance.Carpool.API.Controllers
             return Created($"api/UserController/{userDto.Id}", userDto); 
         }
 
+        /// <summary>
+        /// returns information of a user with specifi ID
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpGet("{id}")]
         public ActionResult<UserDto> GetUserById(long id)
         {
@@ -40,12 +50,21 @@ namespace TecAlliance.Carpool.API.Controllers
             }
         }
 
+        /// <summary>
+        /// returns information from all existing users
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         public ActionResult<List<UserDto>> GetAllUsers()
         {
             return businessServices.GetAllUsers();
         }
 
+        /// <summary>
+        /// Updates information about specific user
+        /// </summary>
+        /// <param name="userDto"></param>
+        /// <returns></returns>
         [HttpPut("{id}")]
         public ActionResult<UserDto> UpdateUser(UserDto userDto)
         {
@@ -53,6 +72,22 @@ namespace TecAlliance.Carpool.API.Controllers
             return userDto;
         }
 
+        /// <summary>
+        /// Returns Id, Name and HasCar of a user
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpGet("GetShortInfoOfUser/{id}")]
+        public ActionResult<ShortUserInfoDto> GetShortUserInfo(long id)
+        {
+            return businessServices.GetShortUserInfo(id);
+        }
+
+        /// <summary>
+        /// Removes all stored information about a user
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
        [HttpDelete("{id}")]
         public ActionResult<UserDto> DeleteUser(long id)
         {
