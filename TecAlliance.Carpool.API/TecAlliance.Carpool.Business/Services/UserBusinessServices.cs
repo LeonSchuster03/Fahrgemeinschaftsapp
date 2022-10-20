@@ -19,8 +19,7 @@ namespace TecAlliance.Carpool.Business.Services
         /// </summary>
         /// <param name="userDto"></param>
         public void CreateUser(UserDto userDto)
-        {
-            
+        {           
             var user = ConvertUserDtoToUser(userDto);
             //userDataServices.AddUserToCsv(user);
             userDataServices.PrintUserInfoToFile(user);

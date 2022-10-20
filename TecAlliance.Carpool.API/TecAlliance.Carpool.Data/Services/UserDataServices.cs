@@ -41,7 +41,6 @@ namespace TecAlliance.Carpool.Data.Service
             List<User> userList = new List<User>();
             string[] fileText = File.ReadAllLines($"C:\\010Projects\\019 Fahrgemeinschaft\\Fahrgemeinschaftsapp\\Userlist.csv");
 
-            //Builds User
             foreach(string userText in fileText)
             {
                 User? user = BuildUserFromLine(userText);
@@ -104,10 +103,7 @@ namespace TecAlliance.Carpool.Data.Service
                     return user;
                 }
             }
-            return null;
-         
-        }
-
-        
+            return null;         
+        }        
     }
 }

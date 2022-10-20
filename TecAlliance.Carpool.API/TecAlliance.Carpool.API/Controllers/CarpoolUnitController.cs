@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Runtime.InteropServices;
 using TecAlliance.Carpool.Business.Models;
 using TecAlliance.Carpool.Business.Services;
 
@@ -15,16 +16,25 @@ namespace TecAlliance.Carpool.API.Controllers
             businessServices = new CarpoolUnitBusinessServices();
         }
 
+        /// <summary>
+        /// Creates a Carpool
+        /// </summary>
+        /// <param name="carpoolDto"></param>
+        /// <returns></returns>
         [HttpPost]
         public ActionResult<CarpoolUnitDto> PostCarpoolUnitDto(CarpoolUnitDto carpoolDto)
-        {
-            
+        {            
             carpoolDto.Id = businessServices.GetId();
             businessServices.CreateCarpoolUnit(carpoolDto);
 
             return Created($"api/CarpoolUnitController/{carpoolDto.Id}", carpoolDto);
         }
 
+        /// <summary>
+        /// retrns carpool specific ID
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpGet("{id}")]
         public ActionResult<CarpoolUnitDto> GetCarpoolUnitById(long id)
         {
@@ -38,12 +48,21 @@ namespace TecAlliance.Carpool.API.Controllers
             }
         }
 
+        /// <summary>
+        /// Returns all existing carpools
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         public ActionResult<List<CarpoolUnitDto>> GetAllCarpoolUnits()
         {
             return businessServices.GetAllCarpoolUnits();
         }
 
+        /// <summary>
+        /// Returns carpool with specific Id 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpGet("GetUserInCarpool/{id}")]
         public ActionResult<List<long>> GetUsersInCarpool(long id)
         {
@@ -57,6 +76,11 @@ namespace TecAlliance.Carpool.API.Controllers
             }
         }
 
+        /// <summary>
+        /// Updates information of a carpool
+        /// </summary>
+        /// <param name="carpoolUnitDto"></param>
+        /// <returns></returns>
         [HttpPut("{id}")]
         public ActionResult<CarpoolUnitDto> UpdateCarpoolUnit(CarpoolUnitDto carpoolUnitDto)
         {
@@ -64,6 +88,11 @@ namespace TecAlliance.Carpool.API.Controllers
             return carpoolUnitDto;
         }
 
+        /// <summary>
+        /// Removes all stored informatin about a carpool
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpDelete("{id}")]
         public ActionResult<CarpoolUnitDto> DeleteCarpoolUnit(long id)
         {
@@ -76,6 +105,43 @@ namespace TecAlliance.Carpool.API.Controllers
                 return StatusCode(404);
             }
         }
-        
+
+        /// <summary>
+        /// User can join a carpool by entering the carpool Id
+        /// </summary>
+        /// <param name="cpId"></param>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        [HttpPut("join")]
+        public ActionResult<CarpoolUnitDto> JoinCarpoolUnit(long cpId, long userId)
+        {
+            if(businessServices.JoinCarpoolUnit(cpId, userId ) != null)
+            {
+                return businessServices.JoinCarpoolUnit(cpId, userId);
+            }
+            else
+            {
+                return StatusCode(404);
+            }
+        }
+
+        /// <summary>
+        /// User can leave a carpool by entering the carpool Id
+        /// </summary>
+        /// <param name="cpId"></param>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        [HttpPut("leave")]
+        public ActionResult<CarpoolUnitDto> LeaveCarpoolUnit(long cpId, long userId)
+        {
+            if(businessServices.LeaveCarpoolUnit(cpId, userId) != null)
+            {
+                return businessServices.LeaveCarpoolUnit(cpId, userId);
+            }
+            else
+            {
+                return StatusCode(404);
+            }
+        }        
     }
 }

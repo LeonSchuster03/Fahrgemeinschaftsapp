@@ -16,9 +16,13 @@ namespace TecAlliance.Carpool.Business.Services
         {
             carpoolUnitDataServices = new CarpoolUnitDataServices();
         }
+
+        /// <summary>
+        /// Generates unique Id
+        /// </summary>
+        /// <returns></returns>
         public long GetId()
         {
-            //File.Create("C:\\010Projects\\019 Fahrgemeinschaft\\Fahrgemeinschaftsapp\\CarpoolList.csv");
             long id = 0;
             do
             {
@@ -34,6 +38,10 @@ namespace TecAlliance.Carpool.Business.Services
             return id;
         }
 
+        /// <summary>
+        /// Creates list of all existing carpools
+        /// </summary>
+        /// <returns></returns>
         public List<CarpoolUnitDto> GetAllCarpoolUnits()
         {
             List<CarpoolUnitDto> carpoolUnitDtoList = new List<CarpoolUnitDto>();
@@ -46,6 +54,11 @@ namespace TecAlliance.Carpool.Business.Services
             return carpoolUnitDtoList;
         }
 
+        /// <summary>
+        /// Creates list of all users in a specific carpool
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public List<long> GetUsersInCarpool(long id)
         {
             CarpoolUnitDto carpoolUnitDto = SelectSpecificCarpool(id);
@@ -55,11 +68,14 @@ namespace TecAlliance.Carpool.Business.Services
             }
             List<long> usersInCarpoolList = carpoolUnitDto.Passengers;
             return usersInCarpoolList;
-
-
         }
 
-        public CarpoolUnitDto SelectSpecificCarpool(long id)
+        /// <summary>
+        /// Selects carpool with specific id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public CarpoolUnitDto? SelectSpecificCarpool(long id)
         {
             CarpoolUnitDto selectedCarpoolUnitDto; 
             List<CarpoolUnitDto> carpoolUnitDtoList = GetAllCarpoolUnits();
@@ -74,6 +90,11 @@ namespace TecAlliance.Carpool.Business.Services
             return null;
         }
         
+        /// <summary>
+        /// Updates information of a carpool
+        /// </summary>
+        /// <param name="carpoolUnitDto"></param>
+        /// <exception cref="Exception"></exception>
         public void UpdateCarpoolUnit(CarpoolUnitDto carpoolUnitDto)
         {
             CarpoolUnit carpoolUnit = ConvertCarpoolUnitDtoToCarpoolUnit(carpoolUnitDto);
@@ -87,6 +108,11 @@ namespace TecAlliance.Carpool.Business.Services
             }
         }
 
+        /// <summary>
+        /// Removes all information of a carpool
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public bool DeleteCarpoolUnit(long id)
         {
             if (CheckIfCarpoolUnitExists(id))
@@ -100,6 +126,11 @@ namespace TecAlliance.Carpool.Business.Services
             }
         }
 
+        /// <summary>
+        /// Checks, if a carpool with specific id exists
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public bool CheckIfCarpoolUnitExists(long id)
         {
             if (carpoolUnitDataServices.FilterCarpoolUnitListForSpecificCarpoolUnit(id) != null)
@@ -112,11 +143,17 @@ namespace TecAlliance.Carpool.Business.Services
             }
         }
 
+        /// <summary>
+        /// Creates a new carpool
+        /// </summary>
+        /// <param name="carpoolUnitDto"></param>
         public void CreateCarpoolUnit(CarpoolUnitDto carpoolUnitDto)
         {
             var carpoolUnit = ConvertCarpoolUnitDtoToCarpoolUnit(carpoolUnitDto);
             carpoolUnitDataServices.PrintCarpoolUnitToFile(carpoolUnit);
         }
+
+
         public CarpoolUnitDto? GetCarpoolUnitById(long id)
         {
             CarpoolUnit carpoolUnit = carpoolUnitDataServices.FilterCarpoolUnitListForSpecificCarpoolUnit(id);
@@ -131,12 +168,75 @@ namespace TecAlliance.Carpool.Business.Services
             }                        
         }
 
+        /// <summary>
+        /// User enters carpool by providing his user Id and the carpool Id
+        /// </summary>
+        /// <param name="cpId"></param>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        public CarpoolUnitDto? JoinCarpoolUnit(long cpId, long userId)
+        {          
+            if(CheckIfCarpoolUnitExists(cpId))
+            {
+                CarpoolUnitDto carpoolUnitDto = GetCarpoolUnitById(cpId);
+                if (carpoolUnitDto.PassengerCount > carpoolUnitDto.Passengers.Count() && !carpoolUnitDto.Passengers.Contains(userId))
+                {
+                        carpoolUnitDto.Passengers.Add(userId);
+                        UpdateCarpoolUnit(carpoolUnitDto);
+                        return carpoolUnitDto;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// User leaves carpool by providing his user Id and the carpool Id
+        /// </summary>
+        /// <param name="cpId"></param>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        public CarpoolUnitDto? LeaveCarpoolUnit(long cpId, long userId)
+        {
+            if (CheckIfCarpoolUnitExists(cpId))
+            {
+                CarpoolUnitDto carpoolUnitDto = GetCarpoolUnitById(cpId);
+                carpoolUnitDto.Passengers.Remove(userId);
+                if (carpoolUnitDto.Passengers.Count() == 0)
+                {
+                    UpdateCarpoolUnit(carpoolUnitDto);
+                    return carpoolUnitDto;
+                }                                    
+                return null;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Converts a CarpoolUnitDto to a CarpoolUnit
+        /// </summary>
+        /// <param name="carpoolDto"></param>
+        /// <returns></returns>
         public CarpoolUnit ConvertCarpoolUnitDtoToCarpoolUnit(CarpoolUnitDto carpoolDto)
         {
             var carpoolUnit = new CarpoolUnit(carpoolDto.Id, carpoolDto.PassengerCount, carpoolDto.Destination, carpoolDto.StartLocation, carpoolDto.Departure, carpoolDto.Passengers);
             return carpoolUnit;
         }
 
+        /// <summary>
+        /// Converts a CarpoolUnit to a CarpoolUnitDto
+        /// </summary>
+        /// <param name="carpool"></param>
+        /// <returns></returns>
         public CarpoolUnitDto ConvertCarpoolUnitToCarpoolUnitDto(CarpoolUnit carpool)
         {
             var carpoolUnitDto = new CarpoolUnitDto(carpool.Id, carpool.PassengerCount, carpool.Destination, carpool.StartLocation, carpool.Departure, carpool.Passengers);

@@ -24,7 +24,6 @@ namespace TecAlliance.Carpool.API.Controllers
         [HttpPost]
         public ActionResult<UserDto> PostUserDto(UserDto userDto)
         {
-
             userDto.Id = businessServices.GetId();
             businessServices.CreateUser(userDto);
             
@@ -90,8 +89,7 @@ namespace TecAlliance.Carpool.API.Controllers
         /// <returns></returns>
        [HttpDelete("{id}")]
         public ActionResult<UserDto> DeleteUser(long id)
-        {
-            
+        {           
             if(businessServices.DeleteUser(id)) 
             {
                 return StatusCode(204); 
