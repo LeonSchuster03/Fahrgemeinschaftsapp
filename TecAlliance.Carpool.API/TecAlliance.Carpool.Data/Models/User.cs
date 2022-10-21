@@ -2,7 +2,7 @@
 {
     public class User
     {
-        public long Id { get; set; }
+        public int Id { get; set; }
         public string? UserName { get; set; }
         public string? FirstName { get; set; }
         public string? LastName { get; set; }
@@ -12,7 +12,7 @@
         public string? EndPlace { get; set; }
         public bool HasCar { get; set; }
 
-        public User(long id, string userName, string firstName, string lastName, int age, string gender, string startPlace, string endPlace, bool hasCar)
+        public User(int id, string userName, string firstName, string lastName, int age, string gender, string startPlace, string endPlace, bool hasCar)
         {
             Id = id;
             UserName = userName;

@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using Microsoft.VisualBasic;
+using System.Reflection;
 using TecAlliance.Carpool.Business.Models;
 using TecAlliance.Carpool.Data.Models;
 using TecAlliance.Carpool.Data.Service;
@@ -29,9 +30,9 @@ namespace TecAlliance.Carpool.Business.Services
         /// Creates unique Id for a user
         /// </summary>
         /// <returns></returns>
-        public long GetId()
+        public int GetId()
         {
-            long id = 0;
+            int id = 0;
             do {             
                 if (!CheckIfUserExists(id))
                 {
@@ -50,7 +51,7 @@ namespace TecAlliance.Carpool.Business.Services
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public bool CheckIfUserExists(long id)
+        public bool CheckIfUserExists(int id)
         {
             if (userDataServices.FilterUserListForSpecificUser(id) != null)
             {
@@ -67,7 +68,7 @@ namespace TecAlliance.Carpool.Business.Services
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public UserDto? GetUserById(long id)
+        public UserDto? GetUserById(int id)
         {            
             List<User> users = userDataServices.CreateUserListFromFile();
             foreach(User user in users)
@@ -96,13 +97,43 @@ namespace TecAlliance.Carpool.Business.Services
             }
             return userDtoList;
         }
+
+        public List<ShortUserInfoDto> GetUsersWithSameDestination(string destination)
+        {
+            List<ShortUserInfoDto> shortUserInfoList = new List<ShortUserInfoDto>();
+            List < UserDto > userDtoList = GetAllUsers();
+            foreach( UserDto userDto in userDtoList)
+            {
+                
+                if(userDto.EndPlace == destination)
+                {
+
+                    shortUserInfoList.Add(GetShortUserInfo(userDto.Id));
+                }
+            }
+            return shortUserInfoList;
+        }
+
+        public List<ShortUserInfoDto> GetUsersWithIds(string ids)
+        {
+            int[] splittedIdsInt = Array.ConvertAll(ids.Split(","), s => int.Parse(s));
+            List<ShortUserInfoDto> shortUserInfoDtoList = new List<ShortUserInfoDto>();
+
+            for(int i = 0; i < splittedIdsInt.Length; i++)
+            {
+                ShortUserInfoDto shortUserInfoDto = GetShortUserInfo(splittedIdsInt[i]);
+                shortUserInfoDtoList.Add(shortUserInfoDto);
+            }
+            return shortUserInfoDtoList;
+            
+        }
         
         /// <summary>
         /// Creates ShotUserInfoDto and returns it
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public ShortUserInfoDto GetShortUserInfo(long id)
+        public ShortUserInfoDto GetShortUserInfo(int id)
         {
             UserDto userDto = GetUserById(id);
             ShortUserInfoDto shortUserInfoDto = new ShortUserInfoDto(userDto.Id, userDto.FirstName, userDto.HasCar);
@@ -132,7 +163,7 @@ namespace TecAlliance.Carpool.Business.Services
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public bool DeleteUser(long id)
+        public bool DeleteUser(int id)
         {
             if (CheckIfUserExists(id))
             {

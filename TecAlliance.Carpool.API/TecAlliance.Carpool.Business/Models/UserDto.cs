@@ -8,7 +8,7 @@ namespace TecAlliance.Carpool.Business.Models
 {
     public class UserDto
     {
-        public long Id { get; set; }
+        public int Id { get; set; }
         public string? UserName { get; set; }
         public string? FirstName { get; set; }
         public string? LastName { get; set; }
@@ -18,7 +18,7 @@ namespace TecAlliance.Carpool.Business.Models
         public string? EndPlace { get; set; }
         public bool HasCar { get; set; }
 
-        public UserDto(long id, string userName, string firstName, string lastName, int age, string gender, string startPlace, string endPlace, bool hasCar)
+        public UserDto(int id, string userName, string firstName, string lastName, int age, string gender, string startPlace, string endPlace, bool hasCar)
         {
             Id = id;
             UserName = userName;

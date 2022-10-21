@@ -21,9 +21,9 @@ namespace TecAlliance.Carpool.Business.Services
         /// Generates unique Id
         /// </summary>
         /// <returns></returns>
-        public long GetId()
+        public int GetId()
         {
-            long id = 0;
+            int id = 0;
             do
             {
                 if (!CheckIfCarpoolUnitExists(id))
@@ -59,14 +59,14 @@ namespace TecAlliance.Carpool.Business.Services
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public List<long> GetUsersInCarpool(long id)
+        public List<int> GetUsersInCarpool(int id)
         {
             CarpoolUnitDto carpoolUnitDto = SelectSpecificCarpool(id);
             if(carpoolUnitDto == null)
             {
                 return null;
             }
-            List<long> usersInCarpoolList = carpoolUnitDto.Passengers;
+            List<int> usersInCarpoolList = carpoolUnitDto.Passengers;
             return usersInCarpoolList;
         }
 
@@ -75,7 +75,7 @@ namespace TecAlliance.Carpool.Business.Services
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public CarpoolUnitDto? SelectSpecificCarpool(long id)
+        public CarpoolUnitDto? SelectSpecificCarpool(int id)
         {
             CarpoolUnitDto selectedCarpoolUnitDto; 
             List<CarpoolUnitDto> carpoolUnitDtoList = GetAllCarpoolUnits();
@@ -113,7 +113,7 @@ namespace TecAlliance.Carpool.Business.Services
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public bool DeleteCarpoolUnit(long id)
+        public bool DeleteCarpoolUnit(int id)
         {
             if (CheckIfCarpoolUnitExists(id))
             {
@@ -131,7 +131,7 @@ namespace TecAlliance.Carpool.Business.Services
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public bool CheckIfCarpoolUnitExists(long id)
+        public bool CheckIfCarpoolUnitExists(int id)
         {
             if (carpoolUnitDataServices.FilterCarpoolUnitListForSpecificCarpoolUnit(id) != null)
             {
@@ -154,7 +154,7 @@ namespace TecAlliance.Carpool.Business.Services
         }
 
 
-        public CarpoolUnitDto? GetCarpoolUnitById(long id)
+        public CarpoolUnitDto? GetCarpoolUnitById(int id)
         {
             CarpoolUnit carpoolUnit = carpoolUnitDataServices.FilterCarpoolUnitListForSpecificCarpoolUnit(id);
             CarpoolUnitDto carpoolUnitDto = ConvertCarpoolUnitToCarpoolUnitDto(carpoolUnit);
@@ -174,7 +174,7 @@ namespace TecAlliance.Carpool.Business.Services
         /// <param name="cpId"></param>
         /// <param name="userId"></param>
         /// <returns></returns>
-        public CarpoolUnitDto? JoinCarpoolUnit(long cpId, long userId)
+        public CarpoolUnitDto? JoinCarpoolUnit(int cpId, int userId)
         {          
             if(CheckIfCarpoolUnitExists(cpId))
             {
@@ -202,18 +202,23 @@ namespace TecAlliance.Carpool.Business.Services
         /// <param name="cpId"></param>
         /// <param name="userId"></param>
         /// <returns></returns>
-        public CarpoolUnitDto? LeaveCarpoolUnit(long cpId, long userId)
+        public CarpoolUnitDto? LeaveCarpoolUnit(int cpId, int userId)
         {
             if (CheckIfCarpoolUnitExists(cpId))
             {
                 CarpoolUnitDto carpoolUnitDto = GetCarpoolUnitById(cpId);
                 carpoolUnitDto.Passengers.Remove(userId);
-                if (carpoolUnitDto.Passengers.Count() == 0)
+                if (carpoolUnitDto.Passengers.Count() != 0)
                 {
                     UpdateCarpoolUnit(carpoolUnitDto);
                     return carpoolUnitDto;
-                }                                    
-                return null;
+                }
+                else
+                {
+                    DeleteCarpoolUnit(cpId);
+                    return null;
+                }
+                
             }
             else
             {

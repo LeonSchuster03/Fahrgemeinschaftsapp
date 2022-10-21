@@ -9,7 +9,7 @@ namespace TecAlliance.Carpool.Data.Services
 {
     public class CarpoolUnitDataServices
     {
-        public bool CheckIfCarpoolUnitExists(long id)
+        public bool CheckIfCarpoolUnitExists(int id)
         {
             if (FilterCarpoolUnitListForSpecificCarpoolUnit(id) != null)
             {
@@ -20,7 +20,7 @@ namespace TecAlliance.Carpool.Data.Services
                 return false;
             }           
         }
-        public CarpoolUnit? FilterCarpoolUnitListForSpecificCarpoolUnit(long id)
+        public CarpoolUnit? FilterCarpoolUnitListForSpecificCarpoolUnit(int id)
         {
             List<CarpoolUnit> carpoolUnitList = CreateCarpoolUnitListFromFile();
             foreach(CarpoolUnit carpoolUnit in carpoolUnitList)
@@ -36,7 +36,7 @@ namespace TecAlliance.Carpool.Data.Services
         public void PrintCarpoolUnitToFile(CarpoolUnit carpoolUnit)
         {           
             var newLine = $"{carpoolUnit.Id};{carpoolUnit.PassengerCount};{carpoolUnit.Destination};{carpoolUnit.StartLocation};{carpoolUnit.Departure}";
-            foreach(long passenger in carpoolUnit.Passengers)
+            foreach(int passenger in carpoolUnit.Passengers)
             {
                 newLine += $";{passenger}";
             }
@@ -44,7 +44,7 @@ namespace TecAlliance.Carpool.Data.Services
             File.AppendAllText("C:\\010Projects\\019 Fahrgemeinschaft\\Fahrgemeinschaftsapp\\CarpoolList.csv", newLine);            
         }
 
-        public List<CarpoolUnit> CreateCarpoolUnitListFromFile()
+        public List<CarpoolUnit>? CreateCarpoolUnitListFromFile()
         {
             List<CarpoolUnit> carpoolList = new List<CarpoolUnit>();
             string[] fileText = File.ReadAllLines("C:\\010Projects\\019 Fahrgemeinschaft\\Fahrgemeinschaftsapp\\CarpoolList.csv");
@@ -63,7 +63,7 @@ namespace TecAlliance.Carpool.Data.Services
             PrintCarpoolUnitToFile(carpoolUnit);
         }
 
-        public void DeleteCarpoolUnitFromFile(long id)
+        public void DeleteCarpoolUnitFromFile(int id)
         {
             string[] lines = File.ReadAllLines($"C:\\010Projects\\019 Fahrgemeinschaft\\Fahrgemeinschaftsapp\\CarpoolList.csv");
             List<string> linesToWrite = new List<string>();
@@ -83,12 +83,12 @@ namespace TecAlliance.Carpool.Data.Services
             if(line != null)
             {
                 string[] info = line.Split(";");
-                List<long> people = new List<long>();
+                List<int> people = new List<int>();
                 for (int i = 5; i < info.Length; i++)
                 {
-                     people.Add(long.Parse(info[i]));
+                     people.Add(int.Parse(info[i]));
                 }
-                CarpoolUnit carpoolUnit = new CarpoolUnit(long.Parse(info[0]), Convert.ToInt32(info[1]), info[2], info[3], info[4], people);
+                CarpoolUnit carpoolUnit = new CarpoolUnit(int.Parse(info[0]), Convert.ToInt32(info[1]), info[2], info[3], info[4], people);
                 return carpoolUnit;
             }
             else

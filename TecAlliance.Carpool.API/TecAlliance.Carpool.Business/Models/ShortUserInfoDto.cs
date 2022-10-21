@@ -8,11 +8,11 @@ namespace TecAlliance.Carpool.Business.Models
 {
     public class ShortUserInfoDto
     {
-        public long Id { get; set; }
+        public int Id { get; set; }
         public string Name { get; set; }
         public bool CanDrive { get; set; }
 
-        public ShortUserInfoDto(long id, string name, bool candrive)
+        public ShortUserInfoDto(int id, string name, bool candrive)
         {
             Id = id;
             Name = name;

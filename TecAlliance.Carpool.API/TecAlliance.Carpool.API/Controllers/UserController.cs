@@ -36,7 +36,7 @@ namespace TecAlliance.Carpool.API.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet("{id}")]
-        public ActionResult<UserDto> GetUserById(long id)
+        public ActionResult<UserDto> GetUserById(int id)
         {
             UserDto userDto = businessServices.GetUserById(id);
             if(userDto != null)
@@ -59,6 +59,25 @@ namespace TecAlliance.Carpool.API.Controllers
             return businessServices.GetAllUsers();
         }
 
+        [HttpGet("destination")]
+        public ActionResult<List<ShortUserInfoDto>> GetUsersWithSameDestination(string destination)
+        {
+            if(businessServices.GetUsersWithSameDestination(destination) != null)
+            {
+                return businessServices.GetUsersWithSameDestination(destination);
+            }
+            else
+            {
+                return StatusCode(404);
+            }           
+        }
+
+        [HttpGet("userlist")]
+        public ActionResult<List<ShortUserInfoDto>> GetUsersWithTheIds(string ids)
+        {
+            return businessServices.GetUsersWithIds(ids);
+        }
+
         /// <summary>
         /// Updates information about specific user
         /// </summary>
@@ -77,7 +96,7 @@ namespace TecAlliance.Carpool.API.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet("GetShortInfoOfUser/{id}")]
-        public ActionResult<ShortUserInfoDto> GetShortUserInfo(long id)
+        public ActionResult<ShortUserInfoDto> GetShortUserInfo(int id)
         {
             return businessServices.GetShortUserInfo(id);
         }
@@ -88,7 +107,7 @@ namespace TecAlliance.Carpool.API.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
        [HttpDelete("{id}")]
-        public ActionResult<UserDto> DeleteUser(long id)
+        public ActionResult<UserDto> DeleteUser(int id)
         {           
             if(businessServices.DeleteUser(id)) 
             {
