@@ -36,7 +36,7 @@ namespace TecAlliance.Carpool.API.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet("{id}")]
-        public ActionResult<CarpoolUnitDto> GetCarpoolUnitById(long id)
+        public ActionResult<CarpoolUnitDto> GetCarpoolUnitById(int id)
         {
             if(businessServices.GetCarpoolUnitById(id) != null)
             {
@@ -64,7 +64,7 @@ namespace TecAlliance.Carpool.API.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet("GetUserInCarpool/{id}")]
-        public ActionResult<List<long>> GetUsersInCarpool(long id)
+        public ActionResult<List<int>> GetUsersInCarpool(int id)
         {
             if(businessServices.GetUsersInCarpool(id) != null)
             {
@@ -75,7 +75,6 @@ namespace TecAlliance.Carpool.API.Controllers
                 return null;
             }
         }
-
 
         /// <summary>
         /// Updates information of a carpool
@@ -95,7 +94,7 @@ namespace TecAlliance.Carpool.API.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpDelete("{id}")]
-        public ActionResult<CarpoolUnitDto> DeleteCarpoolUnit(long id)
+        public ActionResult<CarpoolUnitDto> DeleteCarpoolUnit(int id)
         {
             if (businessServices.DeleteCarpoolUnit(id))
             {
@@ -114,7 +113,7 @@ namespace TecAlliance.Carpool.API.Controllers
         /// <param name="userId"></param>
         /// <returns></returns>
         [HttpPut("join")]
-        public ActionResult<CarpoolUnitDto> JoinCarpoolUnit(long cpId, long userId)
+        public ActionResult<CarpoolUnitDto> JoinCarpoolUnit(int cpId, int userId)
         {
             if(businessServices.JoinCarpoolUnit(cpId, userId ) != null)
             {
@@ -133,7 +132,7 @@ namespace TecAlliance.Carpool.API.Controllers
         /// <param name="userId"></param>
         /// <returns></returns>
         [HttpPut("leave")]
-        public ActionResult<CarpoolUnitDto> LeaveCarpoolUnit(long cpId, long userId)
+        public ActionResult<CarpoolUnitDto> LeaveCarpoolUnit(int cpId, int userId)
         {
             if(businessServices.LeaveCarpoolUnit(cpId, userId) != null)
             {

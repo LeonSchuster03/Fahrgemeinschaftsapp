@@ -59,6 +59,11 @@ namespace TecAlliance.Carpool.API.Controllers
             return businessServices.GetAllUsers();
         }
 
+        /// <summary>
+        /// By entering a destination the program returns a short information about all users with the same destination
+        /// </summary>
+        /// <param name="destination"></param>
+        /// <returns></returns>
         [HttpGet("destination")]
         public ActionResult<List<ShortUserInfoDto>> GetUsersWithSameDestination(string destination)
         {
@@ -72,8 +77,13 @@ namespace TecAlliance.Carpool.API.Controllers
             }           
         }
 
+        /// <summary>
+        /// By entering Ids seperated by a comma, it returns a list with information of the users with that Id
+        /// </summary>
+        /// <param name="ids"></param>
+        /// <returns></returns>
         [HttpGet("userlist")]
-        public ActionResult<List<ShortUserInfoDto>> GetUsersWithTheIds(string ids)
+        public ActionResult<List<ShortUserInfoDto>> GetUsersWithTheIds(List<int> ids)
         {
             return businessServices.GetUsersWithIds(ids);
         }

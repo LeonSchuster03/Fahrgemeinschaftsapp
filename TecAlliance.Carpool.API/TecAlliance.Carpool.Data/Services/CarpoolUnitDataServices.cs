@@ -9,6 +9,11 @@ namespace TecAlliance.Carpool.Data.Services
 {
     public class CarpoolUnitDataServices
     {
+        /// <summary>
+        /// checks if a carpool with the given Id exists
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public bool CheckIfCarpoolUnitExists(int id)
         {
             if (FilterCarpoolUnitListForSpecificCarpoolUnit(id) != null)
@@ -20,6 +25,12 @@ namespace TecAlliance.Carpool.Data.Services
                 return false;
             }           
         }
+
+        /// <summary>
+        /// Takes the id and searches the carpoollist for a carpool with this id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public CarpoolUnit? FilterCarpoolUnitListForSpecificCarpoolUnit(int id)
         {
             List<CarpoolUnit> carpoolUnitList = CreateCarpoolUnitListFromFile();
@@ -33,6 +44,10 @@ namespace TecAlliance.Carpool.Data.Services
             return null;
         }
 
+        /// <summary>
+        /// Converts the carpool information and prints it into the file
+        /// </summary>
+        /// <param name="carpoolUnit"></param>
         public void PrintCarpoolUnitToFile(CarpoolUnit carpoolUnit)
         {           
             var newLine = $"{carpoolUnit.Id};{carpoolUnit.PassengerCount};{carpoolUnit.Destination};{carpoolUnit.StartLocation};{carpoolUnit.Departure}";
@@ -44,6 +59,10 @@ namespace TecAlliance.Carpool.Data.Services
             File.AppendAllText("C:\\010Projects\\019 Fahrgemeinschaft\\Fahrgemeinschaftsapp\\CarpoolList.csv", newLine);            
         }
 
+        /// <summary>
+        /// Reads the file and returns a list with all existing carpools
+        /// </summary>
+        /// <returns></returns>
         public List<CarpoolUnit>? CreateCarpoolUnitListFromFile()
         {
             List<CarpoolUnit> carpoolList = new List<CarpoolUnit>();
@@ -56,13 +75,23 @@ namespace TecAlliance.Carpool.Data.Services
             }
             return carpoolList;
         }
+        
 
+        /// <summary>
+        /// Replaces old information with new information
+        /// </summary>
+        /// <param name="carpoolUnit"></param>
         public void UpdateCarpoolUnit(CarpoolUnit carpoolUnit)
         {
             DeleteCarpoolUnitFromFile(carpoolUnit.Id);
             PrintCarpoolUnitToFile(carpoolUnit);
         }
 
+
+        /// <summary>
+        /// Deletes all information about a carpool
+        /// </summary>
+        /// <param name="id"></param>
         public void DeleteCarpoolUnitFromFile(int id)
         {
             string[] lines = File.ReadAllLines($"C:\\010Projects\\019 Fahrgemeinschaft\\Fahrgemeinschaftsapp\\CarpoolList.csv");
@@ -78,6 +107,11 @@ namespace TecAlliance.Carpool.Data.Services
             File.WriteAllLines($"C:\\010Projects\\019 Fahrgemeinschaft\\Fahrgemeinschaftsapp\\CarpoolList.csv", linesToWrite);
         }
 
+        /// <summary>
+        /// Returns a CarpoolUnit, by processing the given information
+        /// </summary>
+        /// <param name="line"></param>
+        /// <returns></returns>
         public CarpoolUnit? BuildCarpoolUnitFromLine(string line)
         {
             if(line != null)

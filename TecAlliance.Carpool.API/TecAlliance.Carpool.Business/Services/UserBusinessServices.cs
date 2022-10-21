@@ -98,6 +98,11 @@ namespace TecAlliance.Carpool.Business.Services
             return userDtoList;
         }
 
+        /// <summary>
+        /// Returns a list with all the users having the same destination
+        /// </summary>
+        /// <param name="destination"></param>
+        /// <returns></returns>
         public List<ShortUserInfoDto> GetUsersWithSameDestination(string destination)
         {
             List<ShortUserInfoDto> shortUserInfoList = new List<ShortUserInfoDto>();
@@ -114,14 +119,19 @@ namespace TecAlliance.Carpool.Business.Services
             return shortUserInfoList;
         }
 
-        public List<ShortUserInfoDto> GetUsersWithIds(string ids)
+        /// <summary>
+        /// by entering ids seperated by a "," it returns a list of short information of all users with the Ids
+        /// </summary>
+        /// <param name="ids"></param>
+        /// <returns></returns>
+        public List<ShortUserInfoDto> GetUsersWithIds(List<int> ids)
         {
-            int[] splittedIdsInt = Array.ConvertAll(ids.Split(","), s => int.Parse(s));
+
             List<ShortUserInfoDto> shortUserInfoDtoList = new List<ShortUserInfoDto>();
 
-            for(int i = 0; i < splittedIdsInt.Length; i++)
+            for(int i = 0; i < ids.Count; i++)
             {
-                ShortUserInfoDto shortUserInfoDto = GetShortUserInfo(splittedIdsInt[i]);
+                ShortUserInfoDto shortUserInfoDto = GetShortUserInfo(ids[i]);
                 shortUserInfoDtoList.Add(shortUserInfoDto);
             }
             return shortUserInfoDtoList;
@@ -129,7 +139,7 @@ namespace TecAlliance.Carpool.Business.Services
         }
         
         /// <summary>
-        /// Creates ShotUserInfoDto and returns it
+        /// Searches for user with given Id and returns short information about him/her
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>

@@ -23,7 +23,7 @@ namespace TecAlliance.Carpool.Data.Service
             if(line != null)
             {
                 string[] info = line.Split(";");
-                User user = new User(long.Parse(info[0]), info[1], info[2], info[3], Convert.ToInt32(info[4]), info[5], info[6], info[7], Convert.ToBoolean(info[8]));
+                User user = new User(int.Parse(info[0]), info[1], info[2], info[3], Convert.ToInt32(info[4]), info[5], info[6], info[7], Convert.ToBoolean(info[8]));
                 return user;
             }
             else
@@ -60,7 +60,7 @@ namespace TecAlliance.Carpool.Data.Service
         }
 
         /// <summary>
-        /// Removes user from file
+        /// Removes user from the file
         /// </summary>
         /// <param name="id"></param>
         public void DeleteUserFromFile(long id)
