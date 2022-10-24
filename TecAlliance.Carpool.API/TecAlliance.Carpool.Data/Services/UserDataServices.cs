@@ -13,11 +13,12 @@ namespace TecAlliance.Carpool.Data.Service
 {
     public class UserDataServices
     {
+        
         /// <summary>
         /// Splits string, creates User object and returns it
         /// </summary>
         /// <param name="line"></param>
-        /// <returns></returns>
+        /// <returns></returns>        
         public User? BuildUserFromLine(string line)
         {
             if(line != null)
@@ -38,10 +39,10 @@ namespace TecAlliance.Carpool.Data.Service
         /// <returns></returns>
         public List<User> CreateUserListFromFile()
         {
+            string path = Directory.GetCurrentDirectory();
             List<User> userList = new List<User>();
-            string[] fileText = File.ReadAllLines($"C:\\010Projects\\019 Fahrgemeinschaft\\Fahrgemeinschaftsapp\\Userlist.csv");
-
-            foreach(string userText in fileText)
+            string[] fileText = File.ReadAllLines(path + "\\..\\TecAlliance.Carpool.Data\\Userlist.csv");
+            foreach (string userText in fileText)
             {
                 User? user = BuildUserFromLine(userText);
                 userList.Add(user);
@@ -65,7 +66,8 @@ namespace TecAlliance.Carpool.Data.Service
         /// <param name="id"></param>
         public void DeleteUserFromFile(long id)
         {
-            string[] lines = File.ReadAllLines($"C:\\010Projects\\019 Fahrgemeinschaft\\Fahrgemeinschaftsapp\\Userlist.csv");
+            string path = Directory.GetCurrentDirectory();
+            string[] lines = File.ReadAllLines(path + "\\..\\TecAlliance.Carpool.Data\\Userlist.csv");
             List<string> linesToWrite = new List<string>();
             
             foreach(string s in lines)
@@ -75,7 +77,7 @@ namespace TecAlliance.Carpool.Data.Service
                     linesToWrite.Add(s);
                 }
             }
-            File.WriteAllLines($"C:\\010Projects\\019 Fahrgemeinschaft\\Fahrgemeinschaftsapp\\Userlist.csv", linesToWrite);
+            File.WriteAllLines(path + "\\..\\TecAlliance.Carpool.Data\\Userlist.csv", linesToWrite);
         }
 
         /// <summary>
@@ -84,8 +86,10 @@ namespace TecAlliance.Carpool.Data.Service
         /// <param name="user"></param>
         public void PrintUserInfoToFile(User user)
         {
-                var newLine = $"{user.Id};{user.UserName};{user.FirstName};{user.LastName};{user.Age};{user.Gender};{user.StartPlace};{user.EndPlace};{user.HasCar}\n";
-                File.AppendAllText($"C:\\010Projects\\019 Fahrgemeinschaft\\Fahrgemeinschaftsapp\\Userlist.csv", newLine);
+            string path = Directory.GetCurrentDirectory();
+            var newLine = $"{user.Id};{user.UserName};{user.FirstName};{user.LastName};{user.Age};{user.Gender};{user.StartPlace};{user.EndPlace};{user.HasCar}\n";
+            File.AppendAllText(path + "\\..\\TecAlliance.Carpool.Data\\Userlist.csv", newLine);
+            
         }
 
         /// <summary>

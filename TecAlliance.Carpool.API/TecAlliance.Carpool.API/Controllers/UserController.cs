@@ -78,17 +78,6 @@ namespace TecAlliance.Carpool.API.Controllers
         }
 
         /// <summary>
-        /// By entering Ids seperated by a comma, it returns a list with information of the users with that Id
-        /// </summary>
-        /// <param name="ids"></param>
-        /// <returns></returns>
-        [HttpGet("userlist")]
-        public ActionResult<List<ShortUserInfoDto>> GetUsersWithTheIds(List<int> ids)
-        {
-            return businessServices.GetUsersWithIds(ids);
-        }
-
-        /// <summary>
         /// Updates information about specific user
         /// </summary>
         /// <param name="userDto"></param>

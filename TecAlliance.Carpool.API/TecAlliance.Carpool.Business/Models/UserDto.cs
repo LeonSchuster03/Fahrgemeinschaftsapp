@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,15 +9,16 @@ namespace TecAlliance.Carpool.Business.Models
 {
     public class UserDto
     {
-        public int Id { get; set; }
-        public string? UserName { get; set; }
-        public string? FirstName { get; set; }
-        public string? LastName { get; set; }
-        public int Age { get; set; }
-        public string? Gender { get; set; }
-        public string? StartPlace { get; set; }
-        public string? EndPlace { get; set; }
-        public bool HasCar { get; set; }
+        
+        public int Id { get; set; } //sets and returns the Id of an user
+        public string? UserName { get; set; } //sets and returns the Username of an user
+        public string? FirstName { get; set; } //sets and returns the first name of an user
+        public string? LastName { get; set; } //sets and returns the last name of an user
+        public int Age { get; set; } //sets and returns the age of an user
+        public string? Gender { get; set; } //sets and returns the gender of an user
+        public string? StartPlace { get; set; } //sets and returns the place an User wants to start his carpool
+        public string? EndPlace { get; set; } //sets and returns the destination of an User
+        public bool HasCar { get; set; } //sets and returns a bool, whether the user has a car/can drive
 
         public UserDto(int id, string userName, string firstName, string lastName, int age, string gender, string startPlace, string endPlace, bool hasCar)
         {

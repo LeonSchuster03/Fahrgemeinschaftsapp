@@ -179,7 +179,7 @@ namespace TecAlliance.Carpool.Business.Services
             if(CheckIfCarpoolUnitExists(cpId))
             {
                 CarpoolUnitDto carpoolUnitDto = GetCarpoolUnitById(cpId);
-                if (carpoolUnitDto.PassengerCount > carpoolUnitDto.Passengers.Count() && !carpoolUnitDto.Passengers.Contains(userId))
+                if (carpoolUnitDto.SeatsCount > carpoolUnitDto.Passengers.Count() && !carpoolUnitDto.Passengers.Contains(userId))
                 {
                         carpoolUnitDto.Passengers.Add(userId);
                         UpdateCarpoolUnit(carpoolUnitDto);
@@ -233,7 +233,7 @@ namespace TecAlliance.Carpool.Business.Services
         /// <returns></returns>
         public CarpoolUnit ConvertCarpoolUnitDtoToCarpoolUnit(CarpoolUnitDto carpoolDto)
         {
-            var carpoolUnit = new CarpoolUnit(carpoolDto.Id, carpoolDto.PassengerCount, carpoolDto.Destination, carpoolDto.StartLocation, carpoolDto.Departure, carpoolDto.Passengers);
+            var carpoolUnit = new CarpoolUnit(carpoolDto.Id, carpoolDto.SeatsCount, carpoolDto.Destination, carpoolDto.StartLocation, carpoolDto.Departure, carpoolDto.Passengers);
             return carpoolUnit;
         }
 
@@ -244,7 +244,7 @@ namespace TecAlliance.Carpool.Business.Services
         /// <returns></returns>
         public CarpoolUnitDto ConvertCarpoolUnitToCarpoolUnitDto(CarpoolUnit carpool)
         {
-            var carpoolUnitDto = new CarpoolUnitDto(carpool.Id, carpool.PassengerCount, carpool.Destination, carpool.StartLocation, carpool.Departure, carpool.Passengers);
+            var carpoolUnitDto = new CarpoolUnitDto(carpool.Id, carpool.SeatsCount, carpool.Destination, carpool.StartLocation, carpool.Departure, carpool.Passengers);
             return carpoolUnitDto;
         }
     }

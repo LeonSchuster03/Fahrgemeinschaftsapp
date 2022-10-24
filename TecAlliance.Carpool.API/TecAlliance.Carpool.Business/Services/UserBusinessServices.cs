@@ -75,7 +75,7 @@ namespace TecAlliance.Carpool.Business.Services
             {
                 if(user.Id == id)
                 {
-                    UserDto userDto = ConvertUserToUserDto(user);
+                    UserDto userDto = ConvertUserToUserDto(user); 
                     return userDto;
                 }
             }
@@ -117,25 +117,6 @@ namespace TecAlliance.Carpool.Business.Services
                 }
             }
             return shortUserInfoList;
-        }
-
-        /// <summary>
-        /// by entering ids seperated by a "," it returns a list of short information of all users with the Ids
-        /// </summary>
-        /// <param name="ids"></param>
-        /// <returns></returns>
-        public List<ShortUserInfoDto> GetUsersWithIds(List<int> ids)
-        {
-
-            List<ShortUserInfoDto> shortUserInfoDtoList = new List<ShortUserInfoDto>();
-
-            for(int i = 0; i < ids.Count; i++)
-            {
-                ShortUserInfoDto shortUserInfoDto = GetShortUserInfo(ids[i]);
-                shortUserInfoDtoList.Add(shortUserInfoDto);
-            }
-            return shortUserInfoDtoList;
-            
         }
         
         /// <summary>

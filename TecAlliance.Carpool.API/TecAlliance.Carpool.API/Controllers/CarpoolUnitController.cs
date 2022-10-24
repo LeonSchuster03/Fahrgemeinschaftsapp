@@ -20,7 +20,24 @@ namespace TecAlliance.Carpool.API.Controllers
         /// Creates a Carpool
         /// </summary>
         /// <param name="carpoolDto"></param>
-        /// <returns></returns>
+        /// <returns>
+        /// Returns a newly created carpool
+        /// </returns>
+        /// <remarks>
+        /// Sample request:
+        /// {
+        /// "id": 0,
+        /// "seatsCount": 3,
+        ///  "destination": "Weikersheim",
+        ///  "startLocation": "Unterbalbach",
+        ///  "departure": "6:45",
+        ///  "passengers": [
+        ///    0
+        ///    1
+        ///    2
+        ///  ]
+        ///    }
+        /// </remarks>
         [HttpPost]
         public ActionResult<CarpoolUnitDto> PostCarpoolUnitDto(CarpoolUnitDto carpoolDto)
         {            
@@ -36,7 +53,7 @@ namespace TecAlliance.Carpool.API.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet("{id}")]
-        public ActionResult<CarpoolUnitDto> GetCarpoolUnitById(int id)
+        public ActionResult<CarpoolUnitDto>? GetCarpoolUnitById(int id)
         {
             if(businessServices.GetCarpoolUnitById(id) != null)
             {
@@ -53,7 +70,7 @@ namespace TecAlliance.Carpool.API.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public ActionResult<List<CarpoolUnitDto>> GetAllCarpoolUnits()
+        public ActionResult<List<CarpoolUnitDto>>? GetAllCarpoolUnits()
         {
             return businessServices.GetAllCarpoolUnits();
         }
@@ -64,7 +81,7 @@ namespace TecAlliance.Carpool.API.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet("GetUserInCarpool/{id}")]
-        public ActionResult<List<int>> GetUsersInCarpool(int id)
+        public ActionResult<List<int>>? GetUsersInCarpool(int id)
         {
             if(businessServices.GetUsersInCarpool(id) != null)
             {
