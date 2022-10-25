@@ -25,18 +25,14 @@ namespace TecAlliance.Carpool.API.Controllers
         /// </returns>
         /// <remarks>
         /// Sample request:
-        /// {
+        /// 
         /// "id": 0,
         /// "seatsCount": 3,
         ///  "destination": "Weikersheim",
         ///  "startLocation": "Unterbalbach",
         ///  "departure": "6:45",
-        ///  "passengers": [
-        ///    0
-        ///    1
-        ///    2
-        ///  ]
-        ///    }
+        ///  "passengers": [ 0 , 1, 2 ]
+        ///  
         /// </remarks>
         [HttpPost]
         public ActionResult<CarpoolUnitDto> PostCarpoolUnitDto(CarpoolUnitDto carpoolDto)

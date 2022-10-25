@@ -13,5 +13,8 @@
   <ItemGroup>
     <ProjectReference Include="..\TecAlliance.Carpool.Business\TecAlliance.Carpool.Business.csproj" />
   </ItemGroup>
-
+	<PropertyGroup>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<NoWarn>$(NoWarn);1591</NoWarn>
+	</PropertyGroup>
 </Project>
