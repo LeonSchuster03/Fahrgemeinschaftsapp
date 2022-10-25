@@ -14,11 +14,9 @@ builder.Services.AddSwaggerGen(options =>
 });
 
 builder.Services.AddSingleton<UserDtoProvider>();
-builder.Services.AddSwaggerExamplesFromAssemblyOf<UserDtoProvider>();
-
+builder.Services.AddSingleton<List<UserDtoProvider>>();
 builder.Services.AddSingleton<CarpoolUnitDtoProvider>();
-builder.Services.AddSwaggerExamplesFromAssemblyOf<CarpoolUnitDtoProvider>();
-
+builder.Services.AddSingleton<List<CarpoolUnitDtoProvider>>();
 builder.Services.AddSingleton<ShortUserInfoDtoProvider>();
 builder.Services.AddSwaggerExamplesFromAssemblyOf<ShortUserInfoDtoProvider>();
 
