@@ -10,10 +10,10 @@ namespace TecAlliance.Carpool.API.Controllers
     [ApiController]
     public class CarpoolUnitController : ControllerBase
     {
-        CarpoolUnitBusinessServices businessServices;
-        public CarpoolUnitController()
+        ICarpoolUnitBusinessServices businessServices;
+        public CarpoolUnitController(ICarpoolUnitBusinessServices carpoolUnitBusiness)
         {
-            businessServices = new CarpoolUnitBusinessServices();
+            businessServices = carpoolUnitBusiness;
         }
 
         /// <summary>
@@ -23,28 +23,16 @@ namespace TecAlliance.Carpool.API.Controllers
         /// <returns>
         /// Returns a newly created carpool
         /// </returns>
-        /// <remarks>
-        /// Sample request:
-        /// 
-        /// "id": 0,
-        /// "seatsCount": 3,
-        ///  "destination": "Weikersheim",
-        ///  "startLocation": "Unterbalbach",
-        ///  "departure": "6:45",
-        ///  "passengers": [ 0 , 1, 2 ]
-        ///  
-        /// </remarks>
         [HttpPost]
-        public ActionResult<CarpoolUnitDto> PostCarpoolUnitDto(CarpoolUnitDto carpoolDto)
+        public ActionResult<CarpoolUnitDto> PostCarpoolUnitDto(int seatsCount, string destination, string startLocation, string departure, List<int> passengers)
         {            
-            carpoolDto.Id = businessServices.GetId();
-            businessServices.CreateCarpoolUnit(carpoolDto);
+            var carpoolUnitDto = businessServices.CreateCarpoolUnit(businessServices.GetId(),  seatsCount,  destination,  startLocation,  departure,passengers);
 
-            return Created($"api/CarpoolUnitController/{carpoolDto.Id}", carpoolDto);
+            return Created($"api/CarpoolUnitController/{carpoolUnitDto.Id}", carpoolUnitDto);
         }
 
         /// <summary>
-        /// retrns carpool specific ID
+        /// returns carpool specific ID
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>

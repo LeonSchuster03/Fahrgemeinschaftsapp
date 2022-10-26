@@ -8,7 +8,7 @@ using TecAlliance.Carpool.Data.Models;
 
 namespace TecAlliance.Carpool.Data.Services
 {
-    public class CarpoolUnitDataServices
+    public class CarpoolUnitDataServices : ICarpoolUnitDataServices
     {
 
         /// <summary>

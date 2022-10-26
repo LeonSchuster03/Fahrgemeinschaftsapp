@@ -10,10 +10,10 @@ namespace TecAlliance.Carpool.API.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-        UserBusinessServices businessServices;
-        public UserController()
+        IUserBusinessServices businessServices;
+        public UserController(IUserBusinessServices userBusinessServices)
         {
-            businessServices = new UserBusinessServices();
+            businessServices = userBusinessServices;
         }
 
         /// <summary>
@@ -24,10 +24,10 @@ namespace TecAlliance.Carpool.API.Controllers
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public ActionResult<UserDto> PostUserDto(UserDto userDto)
+        public ActionResult<UserDto> PostUserDto(string username, string firstName, string lastName, int age, string gender, string startPlace, string destination, bool hasCar)
         {
-            userDto.Id = businessServices.GetId();
-            businessServices.CreateUser(userDto);
+
+            var userDto = businessServices.CreateUser(businessServices.GetId(),username,firstName,lastName,age,gender,startPlace,destination, hasCar) ;
             
             return Created($"api/UserController/{userDto.Id}", userDto); 
         }
@@ -43,7 +43,7 @@ namespace TecAlliance.Carpool.API.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public ActionResult<UserDto> GetUserById(int id)
         {
-            UserDto userDto = businessServices.GetUserById(id);
+            UserDto? userDto = businessServices.GetUserById(id);
             if(userDto != null)
             {
                 return userDto;
@@ -96,9 +96,9 @@ namespace TecAlliance.Carpool.API.Controllers
         [ProducesResponseType(StatusCodes.Status202Accepted)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public ActionResult<UserDto> UpdateUser(UserDto userDto)
+        public ActionResult<UserDto> UpdateUser(int id, string username, string firstName, string lastName, int age, string gender, string startPlace, string destination, bool hasCar)
         {
-            businessServices.UpdateUser(userDto);
+            var userDto = businessServices.UpdateUser( id,  username,  firstName,  lastName,  age,  gender,  startPlace,  destination,  hasCar);
             return userDto;
         }
 

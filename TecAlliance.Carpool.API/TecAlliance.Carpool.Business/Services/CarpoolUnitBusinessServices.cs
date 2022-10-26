@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 using TecAlliance.Carpool.Business.Models;
@@ -9,12 +10,12 @@ using TecAlliance.Carpool.Data.Services;
 
 namespace TecAlliance.Carpool.Business.Services
 {
-    public class CarpoolUnitBusinessServices
+    public class CarpoolUnitBusinessServices : ICarpoolUnitBusinessServices
     {
-        CarpoolUnitDataServices carpoolUnitDataServices;
-        public CarpoolUnitBusinessServices()
+        ICarpoolUnitDataServices carpoolUnitDataServices;
+        public CarpoolUnitBusinessServices(ICarpoolUnitDataServices carpoolUnitData)
         {
-            carpoolUnitDataServices = new CarpoolUnitDataServices();
+            carpoolUnitDataServices = carpoolUnitData;
         }
 
         /// <summary>
@@ -147,13 +148,19 @@ namespace TecAlliance.Carpool.Business.Services
         /// Creates a new carpool
         /// </summary>
         /// <param name="carpoolUnitDto"></param>
-        public void CreateCarpoolUnit(CarpoolUnitDto carpoolUnitDto)
+        public CarpoolUnitDto CreateCarpoolUnit(int id, int seatsCount, string destination, string startLocation, string departure, List<int> passengers)
         {
+            var carpoolUnitDto = new CarpoolUnitDto(id, seatsCount, destination, startLocation, departure, passengers);
             var carpoolUnit = ConvertCarpoolUnitDtoToCarpoolUnit(carpoolUnitDto);
             carpoolUnitDataServices.PrintCarpoolUnitToFile(carpoolUnit);
+            return carpoolUnitDto;
         }
 
-
+        /// <summary>
+        /// Returns a carpool with the given Id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public CarpoolUnitDto? GetCarpoolUnitById(int id)
         {
             CarpoolUnit carpoolUnit = carpoolUnitDataServices.FilterCarpoolUnitListForSpecificCarpoolUnit(id);

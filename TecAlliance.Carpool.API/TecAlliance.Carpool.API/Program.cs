@@ -3,6 +3,9 @@ using Swashbuckle.AspNetCore.Filters;
 using TecAlliance.Carpool.Business.SampleData;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
+using TecAlliance.Carpool.Business.Services;
+using TecAlliance.Carpool.Data.Service;
+using TecAlliance.Carpool.Data.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -42,6 +45,12 @@ builder.Services.AddSingleton<CarpoolUnitDtoProvider>();
 builder.Services.AddSingleton<List<CarpoolUnitDtoProvider>>();
 builder.Services.AddSingleton<ShortUserInfoDtoProvider>();
 builder.Services.AddSwaggerExamplesFromAssemblyOf<ShortUserInfoDtoProvider>();
+
+builder.Services.AddScoped<IUserBusinessServices, UserBusinessServices>();
+builder.Services.AddScoped<IUserDataServices, UserDataServices>();
+
+builder.Services.AddScoped<ICarpoolUnitBusinessServices, CarpoolUnitBusinessServices>();
+builder.Services.AddScoped<ICarpoolUnitDataServices, CarpoolUnitDataServices>();
 
 var app = builder.Build();
 

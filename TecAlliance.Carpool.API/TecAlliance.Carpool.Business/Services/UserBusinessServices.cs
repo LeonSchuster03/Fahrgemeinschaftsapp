@@ -6,24 +6,26 @@ using TecAlliance.Carpool.Data.Service;
 
 namespace TecAlliance.Carpool.Business.Services
 {
-    public class UserBusinessServices
+    public class UserBusinessServices : IUserBusinessServices
     {
-        UserDataServices userDataServices;
+        IUserDataServices userDataServices;
         
-        public UserBusinessServices()
+        public UserBusinessServices(IUserDataServices UserDataServices)
         {
-            userDataServices = new UserDataServices();
+            userDataServices = UserDataServices;
         }
         
         /// <summary>
         /// Converts user to userDto and activates PrintUserInfoToFile-Method
         /// </summary>
         /// <param name="userDto"></param>
-        public void CreateUser(UserDto userDto)
-        {           
+        public UserDto CreateUser(int id, string username,string firstName, string lastName, int age, string gender, string startPlace, string destination, bool hasCar)
+        {
+            var userDto = new UserDto(id, username, firstName, lastName, age, gender, startPlace, destination, hasCar);
             var user = ConvertUserDtoToUser(userDto);
             //userDataServices.AddUserToCsv(user);
             userDataServices.PrintUserInfoToFile(user);
+            return userDto;
         }
 
         /// <summary>
@@ -136,8 +138,9 @@ namespace TecAlliance.Carpool.Business.Services
         /// </summary>
         /// <param name="userDto"></param>
         /// <exception cref="Exception"></exception>
-        public void UpdateUser(UserDto userDto)
+        public UserDto UpdateUser(int id, string username, string firstName, string lastName, int age, string gender, string startPlace, string destination, bool hasCar)
         {
+            var userDto = new UserDto(id, username, firstName, lastName, age, gender, startPlace, destination, hasCar);
             User user = ConvertUserDtoToUser(userDto);
             if (CheckIfUserExists(user.Id))
             {               
@@ -147,6 +150,7 @@ namespace TecAlliance.Carpool.Business.Services
             {
                 throw new Exception();
             }
+            return userDto;
         }
         
         /// <summary>

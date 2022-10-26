@@ -11,7 +11,7 @@ using TecAlliance.Carpool.Data.Models;
 
 namespace TecAlliance.Carpool.Data.Service
 {
-    public class UserDataServices
+    public class UserDataServices : IUserDataServices
     {
         
         /// <summary>
