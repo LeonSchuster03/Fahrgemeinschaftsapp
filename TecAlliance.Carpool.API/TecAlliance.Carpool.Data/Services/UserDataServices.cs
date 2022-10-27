@@ -13,7 +13,13 @@ namespace TecAlliance.Carpool.Data.Service
 {
     public class UserDataServices : IUserDataServices
     {
-        
+        public string Path { get; set; }
+
+        public UserDataServices()
+        {
+            Path = Directory.GetCurrentDirectory() + "\\..\\TecAlliance.Carpool.Data\\Userlist.csv";
+        }
+
         /// <summary>
         /// Splits string, creates User object and returns it
         /// </summary>
@@ -39,9 +45,8 @@ namespace TecAlliance.Carpool.Data.Service
         /// <returns></returns>
         public List<User> CreateUserListFromFile()
         {
-            string path = Directory.GetCurrentDirectory();
             List<User> userList = new List<User>();
-            string[] fileText = File.ReadAllLines(path + "\\..\\TecAlliance.Carpool.Data\\Userlist.csv");
+            string[] fileText = File.ReadAllLines(Path);
             foreach (string userText in fileText)
             {
                 User? user = BuildUserFromLine(userText);
@@ -66,8 +71,7 @@ namespace TecAlliance.Carpool.Data.Service
         /// <param name="id"></param>
         public void DeleteUserFromFile(long id)
         {
-            string path = Directory.GetCurrentDirectory();
-            string[] lines = File.ReadAllLines(path + "\\..\\TecAlliance.Carpool.Data\\Userlist.csv");
+            string[] lines = File.ReadAllLines(Path);
             List<string> linesToWrite = new List<string>();
             
             foreach(string s in lines)
@@ -77,7 +81,7 @@ namespace TecAlliance.Carpool.Data.Service
                     linesToWrite.Add(s);
                 }
             }
-            File.WriteAllLines(path + "\\..\\TecAlliance.Carpool.Data\\Userlist.csv", linesToWrite);
+            File.WriteAllLines(Path, linesToWrite);
         }
 
         /// <summary>
@@ -88,7 +92,7 @@ namespace TecAlliance.Carpool.Data.Service
         {
             string path = Directory.GetCurrentDirectory();
             var newLine = $"{user.Id};{user.UserName};{user.FirstName};{user.LastName};{user.Age};{user.Gender};{user.StartPlace};{user.EndPlace};{user.HasCar}\n";
-            File.AppendAllText(path + "\\..\\TecAlliance.Carpool.Data\\Userlist.csv", newLine);
+            File.AppendAllText(Path, newLine);
             
         }
 

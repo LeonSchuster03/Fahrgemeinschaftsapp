@@ -10,7 +10,12 @@ namespace TecAlliance.Carpool.Data.Services
 {
     public class CarpoolUnitDataServices : ICarpoolUnitDataServices
     {
+        public string Path { get; set; }
 
+        public CarpoolUnitDataServices()
+        {
+            Path = Directory.GetCurrentDirectory() + "\\..\\TecAlliance.Carpool.Data\\Carpoollist.csv";
+        }
         /// <summary>
         /// checks if a carpool with the given Id exists
         /// </summary>
@@ -52,14 +57,13 @@ namespace TecAlliance.Carpool.Data.Services
         /// <param name="carpoolUnit"></param>
         public void PrintCarpoolUnitToFile(CarpoolUnit carpoolUnit)
         {
-            string path = Directory.GetCurrentDirectory();
             var newLine = $"{carpoolUnit.Id};{carpoolUnit.SeatsCount};{carpoolUnit.Destination};{carpoolUnit.StartLocation};{carpoolUnit.Departure}";
             foreach(int passenger in carpoolUnit.Passengers)
             {
                 newLine += $";{passenger}";
             }
             newLine += "\n";
-            File.AppendAllText(path + "\\..\\TecAlliance.Carpool.Data\\CarpoolList.csv", newLine);            
+            File.AppendAllText(Path, newLine);            
         }
 
         /// <summary>
@@ -68,9 +72,8 @@ namespace TecAlliance.Carpool.Data.Services
         /// <returns></returns>
         public List<CarpoolUnit>? CreateCarpoolUnitListFromFile()
         {
-            string path = Directory.GetCurrentDirectory();
             List<CarpoolUnit> carpoolList = new List<CarpoolUnit>();
-            string[] fileText = File.ReadAllLines(path + "\\..\\TecAlliance.Carpool.Data\\CarpoolList.csv");
+            string[] fileText = File.ReadAllLines(Path);
 
             foreach(string carpoolUnitText in fileText)
             {
@@ -98,18 +101,16 @@ namespace TecAlliance.Carpool.Data.Services
         /// <param name="id"></param>
         public void DeleteCarpoolUnitFromFile(int id)
         {
-            string path = Directory.GetCurrentDirectory();
-            string[] lines = File.ReadAllLines(path + "\\..\\TecAlliance.Carpool.Data\\CarpoolList.csv");
-            List<string> linesToWrite = new List<string>();
-
-            foreach(string s in lines)
+            
+            var allCarpools = CreateCarpoolUnitListFromFile();
+            using (File.Create(Path));
+            foreach (var carpool in allCarpools)
             {
-                if (!s.Contains($"{id};"))
+                if(carpool.Id != id)
                 {
-                    linesToWrite.Add(s);
+                    PrintCarpoolUnitToFile(carpool);
                 }
             }
-            File.WriteAllLines(path + "\\..\\TecAlliance.Carpool.Data\\CarpoolList.csv", linesToWrite);
         }
 
         /// <summary>

@@ -108,7 +108,7 @@ namespace TecAlliance.Carpool.API.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet("GetShortInfoOfUser/{id}")]
-        [ProducesResponseType(StatusCodes.Status302Found)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ActionResult<ShortUserInfoDto> GetShortUserInfo(int id)
