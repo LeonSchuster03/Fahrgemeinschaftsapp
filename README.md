@@ -23,7 +23,7 @@ Wenn man "n" auswählt kommt man zur Registrierung, bei der man sich einen Benut
 
 ![image](https://user-images.githubusercontent.com/113528243/195777046-f93db0a4-13cb-4446-a17a-70ec995b3fe9.png)<br>
 
-### Hautmenü
+### Hauptmenü
 <p>Nach der Anmeldung/Registrierung wird man zum Menü weitergeleitet, wo man die verschienenen Funktionen der App auswählen kann.<br>
 <br>
 Durch Konsoleneingabe kann man einen Punkt auswählen.<br>
