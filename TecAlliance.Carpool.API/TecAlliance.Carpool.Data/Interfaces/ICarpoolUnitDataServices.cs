@@ -21,17 +21,17 @@ namespace TecAlliance.Carpool.Data.Services
 
 
         /// <summary>
-        /// Converts the carpool information and prints it into the file
+        /// Converts the carpool information and stores it in the storage unit
         /// </summary>
         /// <param name="carpoolUnit"></param>
-        void PrintCarpoolUnitToFile(CarpoolUnit carpoolUnit);
+        void PrintCarpoolUnit(CarpoolUnit carpoolUnit);
 
 
         /// <summary>
-        /// Reads the file and returns a list with all existing carpools
+        /// Reads all stored information and returns a list with all existing carpools
         /// </summary>
         /// <returns></returns>
-        List<CarpoolUnit>? CreateCarpoolUnitListFromFile();
+        List<CarpoolUnit>? CreateCarpoolUnitList();
 
 
         /// <summary>
@@ -45,14 +45,14 @@ namespace TecAlliance.Carpool.Data.Services
         /// Deletes all information about a carpool
         /// </summary>
         /// <param name="id"></param>
-        void DeleteCarpoolUnitFromFile(int id);
+        void DeleteCarpoolUnit(int id);
 
         /// <summary>
         /// Returns a CarpoolUnit, by processing the given information
         /// </summary>
         /// <param name="line"></param>
         /// <returns></returns>
-        CarpoolUnit? BuildCarpoolUnitFromLine(string line);
+        CarpoolUnit? BuildCarpoolUnit(string line);
 
     }
 }

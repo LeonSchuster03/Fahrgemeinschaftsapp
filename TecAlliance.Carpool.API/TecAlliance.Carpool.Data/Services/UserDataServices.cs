@@ -25,7 +25,7 @@ namespace TecAlliance.Carpool.Data.Service
         /// </summary>
         /// <param name="line"></param>
         /// <returns></returns>        
-        public User? BuildUserFromLine(string line)
+        public User? BuildUser(string line)
         {
             if(line != null)
             {
@@ -43,13 +43,13 @@ namespace TecAlliance.Carpool.Data.Service
         /// Reads file and creates a list of all existing users
         /// </summary>
         /// <returns></returns>
-        public List<User> CreateUserListFromFile()
+        public List<User> CreateUserList()
         {
             List<User> userList = new List<User>();
             string[] fileText = File.ReadAllLines(Path);
             foreach (string userText in fileText)
             {
-                User? user = BuildUserFromLine(userText);
+                User? user = this.BuildUser(userText);
                 userList.Add(user);
             }
             return userList;
@@ -61,15 +61,15 @@ namespace TecAlliance.Carpool.Data.Service
         /// <param name="user"></param>
         public void UpdateUser(User user)
         {
-            DeleteUserFromFile(user.Id);
-            PrintUserInfoToFile(user);
+            this.DeleteUser(user.Id);
+            this.PrintUserInfo(user);
         }
 
         /// <summary>
         /// Removes user from the file
         /// </summary>
         /// <param name="id"></param>
-        public void DeleteUserFromFile(long id)
+        public void DeleteUser(long id)
         {
             string[] lines = File.ReadAllLines(Path);
             List<string> linesToWrite = new List<string>();
@@ -88,7 +88,7 @@ namespace TecAlliance.Carpool.Data.Service
         /// Prints information of a user to the file
         /// </summary>
         /// <param name="user"></param>
-        public void PrintUserInfoToFile(User user)
+        public void PrintUserInfo(User user)
         {
             string path = Directory.GetCurrentDirectory();
             var newLine = $"{user.Id};{user.UserName};{user.FirstName};{user.LastName};{user.Age};{user.Gender};{user.StartPlace};{user.EndPlace};{user.HasCar}\n";
@@ -103,7 +103,7 @@ namespace TecAlliance.Carpool.Data.Service
         /// <returns></returns>
         public User? FilterUserListForSpecificUser(long id)
         {
-            List<User> userList = CreateUserListFromFile();
+            List<User> userList = CreateUserList();
             foreach(User user in userList)
             {
                 if (user.Id == id)

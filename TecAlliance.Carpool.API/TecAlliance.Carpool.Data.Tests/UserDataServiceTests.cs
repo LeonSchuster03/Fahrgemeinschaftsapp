@@ -16,7 +16,7 @@ namespace TecAlliance.Carpool.Data.Tests
             using (File.Create(userDataService.Path)) { }
             foreach(var user in userList) 
             {
-                userDataService.PrintUserInfoToFile(user);
+                userDataService.PrintUserInfo(user);
             }
             return userDataService;
         }
@@ -37,7 +37,7 @@ namespace TecAlliance.Carpool.Data.Tests
             var userDataService = PrepareUserDataServicesTestObject(expected);
 
             //Act
-            var actual = userDataService.CreateUserListFromFile();
+            var actual = userDataService.CreateUserList();
             
             //Assert
             actual.Should().BeEquivalentTo(expected);
@@ -54,8 +54,8 @@ namespace TecAlliance.Carpool.Data.Tests
             var expected = userList;
 
             //Act
-            userDataService.PrintUserInfoToFile(user);
-            var actual = userDataService.CreateUserListFromFile();
+            userDataService.PrintUserInfo(user);
+            var actual = userDataService.CreateUserList();
 
             //Assert
             actual.Should().BeEquivalentTo(expected);
@@ -72,8 +72,8 @@ namespace TecAlliance.Carpool.Data.Tests
             var expected = userList;
 
             //Act
-            userDataService.DeleteUserFromFile(user2.Id);
-            var actual = userDataService.CreateUserListFromFile();
+            userDataService.DeleteUser(user2.Id);
+            var actual = userDataService.CreateUserList();
 
             //Assert
             actual.Should().BeEquivalentTo(expected);
@@ -106,7 +106,7 @@ namespace TecAlliance.Carpool.Data.Tests
 
             //Act
             userDataService.UpdateUser(user2);
-            var actual = userDataService.CreateUserListFromFile();
+            var actual = userDataService.CreateUserList();
 
             //Assert
             actual.Should().BeEquivalentTo(expected);
@@ -121,7 +121,7 @@ namespace TecAlliance.Carpool.Data.Tests
             var expected = new User(1, "Phillip", "Phillip", "Ehinger", 26, "m", "Würzburg", "Weikersheim", true);
 
             //Act
-            var actual = userDataService.BuildUserFromLine("1;Phillip;Phillip;Ehinger;26;m;Würzburg;Weikersheim;true");
+            var actual = userDataService.BuildUser("1;Phillip;Phillip;Ehinger;26;m;Würzburg;Weikersheim;true");
 
             //Assert
             actual.Should().BeEquivalentTo(expected);

@@ -40,7 +40,7 @@ namespace TecAlliance.Carpool.Data.Services
         /// <returns></returns>
         public CarpoolUnit? FilterCarpoolUnitListForSpecificCarpoolUnit(int id)
         {
-            List<CarpoolUnit> carpoolUnitList = CreateCarpoolUnitListFromFile();
+            List<CarpoolUnit> carpoolUnitList = CreateCarpoolUnitList();
             foreach(CarpoolUnit carpoolUnit in carpoolUnitList)
             {
                 if(carpoolUnit.Id == id)
@@ -55,12 +55,12 @@ namespace TecAlliance.Carpool.Data.Services
         /// Converts the carpool information and prints it into the file
         /// </summary>
         /// <param name="carpoolUnit"></param>
-        public void PrintCarpoolUnitToFile(CarpoolUnit carpoolUnit)
+        public void PrintCarpoolUnit(CarpoolUnit carpoolUnit)
         {
             var newLine = $"{carpoolUnit.Id};{carpoolUnit.SeatsCount};{carpoolUnit.Destination};{carpoolUnit.StartLocation};{carpoolUnit.Departure}";
-            foreach(int passenger in carpoolUnit.Passengers)
+            foreach(int passengerID in carpoolUnit.Passengers)
             {
-                newLine += $";{passenger}";
+                newLine += $";{passengerID}";
             }
             newLine += "\n";
             File.AppendAllText(Path, newLine);            
@@ -70,14 +70,14 @@ namespace TecAlliance.Carpool.Data.Services
         /// Reads the file and returns a list with all existing carpools
         /// </summary>
         /// <returns></returns>
-        public List<CarpoolUnit>? CreateCarpoolUnitListFromFile()
+        public List<CarpoolUnit>? CreateCarpoolUnitList()
         {
             List<CarpoolUnit> carpoolList = new List<CarpoolUnit>();
             string[] fileText = File.ReadAllLines(Path);
 
             foreach(string carpoolUnitText in fileText)
             {
-                CarpoolUnit carpoolUnit = BuildCarpoolUnitFromLine(carpoolUnitText);
+                CarpoolUnit carpoolUnit = BuildCarpoolUnit(carpoolUnitText);
                 carpoolList.Add(carpoolUnit);
             }
             return carpoolList;
@@ -90,8 +90,8 @@ namespace TecAlliance.Carpool.Data.Services
         /// <param name="carpoolUnit"></param>
         public void UpdateCarpoolUnit(CarpoolUnit carpoolUnit)
         {
-            DeleteCarpoolUnitFromFile(carpoolUnit.Id);
-            PrintCarpoolUnitToFile(carpoolUnit);
+            DeleteCarpoolUnit(carpoolUnit.Id);
+            PrintCarpoolUnit(carpoolUnit);
         }
 
 
@@ -99,16 +99,16 @@ namespace TecAlliance.Carpool.Data.Services
         /// Deletes all information about a carpool
         /// </summary>
         /// <param name="id"></param>
-        public void DeleteCarpoolUnitFromFile(int id)
+        public void DeleteCarpoolUnit(int id)
         {
             
-            var allCarpools = CreateCarpoolUnitListFromFile();
+            var allCarpools = CreateCarpoolUnitList();
             using (File.Create(Path));
             foreach (var carpool in allCarpools)
             {
                 if(carpool.Id != id)
                 {
-                    PrintCarpoolUnitToFile(carpool);
+                    PrintCarpoolUnit(carpool);
                 }
             }
         }
@@ -118,7 +118,7 @@ namespace TecAlliance.Carpool.Data.Services
         /// </summary>
         /// <param name="line"></param>
         /// <returns></returns>
-        public CarpoolUnit? BuildCarpoolUnitFromLine(string line)
+        public CarpoolUnit? BuildCarpoolUnit(string line)
         {
             if(line != null)
             {

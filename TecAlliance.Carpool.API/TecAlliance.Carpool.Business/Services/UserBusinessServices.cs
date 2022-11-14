@@ -3,6 +3,7 @@ using System.Reflection;
 using TecAlliance.Carpool.Business.Models;
 using TecAlliance.Carpool.Data.Models;
 using TecAlliance.Carpool.Data.Service;
+using System.Linq;
 
 namespace TecAlliance.Carpool.Business.Services
 {
@@ -24,7 +25,7 @@ namespace TecAlliance.Carpool.Business.Services
             var userDto = new UserDto(id, username, firstName, lastName, age, gender, startPlace, destination, hasCar);
             var user = ConvertUserDtoToUser(userDto);
             //userDataServices.AddUserToCsv(user);
-            userDataServices.PrintUserInfoToFile(user);
+            userDataServices.PrintUserInfo(user);
             return userDto;
         }
 
@@ -34,17 +35,20 @@ namespace TecAlliance.Carpool.Business.Services
         /// <returns></returns>
         public int GetId()
         {
-            int id = 0;
-            do {             
-                if (!CheckIfUserExists(id))
-                {
-                    break;
-                }
-                else
-                {
-                    id++;
-                }
-            } while (true);
+            var userList = userDataServices.CreateUserList();
+            var userWithHighestId = userList.OrderByDescending(user => user.Id).First();
+            int id = userWithHighestId.Id + 1;
+            
+            //do {             
+            //    if (!CheckIfUserExists(id))
+            //    {
+            //        break;
+            //    }
+            //    else
+            //    {
+            //        id++;
+            //    }
+            //} while (true);
 
             return id;
         }
@@ -72,7 +76,7 @@ namespace TecAlliance.Carpool.Business.Services
         /// <returns></returns>
         public UserDto? GetUserById(int id)
         {            
-            List<User> users = userDataServices.CreateUserListFromFile();
+            List<User> users = userDataServices.CreateUserList();
             foreach(User user in users)
             {
                 if(user.Id == id)
@@ -91,7 +95,7 @@ namespace TecAlliance.Carpool.Business.Services
         public List<UserDto> GetAllUsers()
         {
             List<UserDto> userDtoList = new List<UserDto>();
-            List<User> userList = userDataServices.CreateUserListFromFile();
+            List<User> userList = userDataServices.CreateUserList();
             foreach (User user in userList)
             {
                 UserDto userDto = ConvertUserToUserDto(user);
@@ -126,9 +130,13 @@ namespace TecAlliance.Carpool.Business.Services
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public ShortUserInfoDto GetShortUserInfo(int id)
+        public ShortUserInfoDto? GetShortUserInfo(int id)
         {
-            UserDto userDto = GetUserById(id);
+            UserDto? userDto = GetUserById(id);
+            if(userDto == null)
+            {
+                return null;
+            }
             ShortUserInfoDto shortUserInfoDto = new ShortUserInfoDto(userDto.Id, userDto.FirstName, userDto.HasCar);
             return shortUserInfoDto;
         }
@@ -138,7 +146,7 @@ namespace TecAlliance.Carpool.Business.Services
         /// </summary>
         /// <param name="userDto"></param>
         /// <exception cref="Exception"></exception>
-        public UserDto UpdateUser(int id, string username, string firstName, string lastName, int age, string gender, string startPlace, string destination, bool hasCar)
+        public UserDto? UpdateUser(int id, string username, string firstName, string lastName, int age, string gender, string startPlace, string destination, bool hasCar)
         {
             var userDto = new UserDto(id, username, firstName, lastName, age, gender, startPlace, destination, hasCar);
             User user = ConvertUserDtoToUser(userDto);
@@ -148,7 +156,7 @@ namespace TecAlliance.Carpool.Business.Services
             }
             else
             {
-                throw new Exception();
+                return null;
             }
             return userDto;
         }
@@ -162,7 +170,7 @@ namespace TecAlliance.Carpool.Business.Services
         {
             if (CheckIfUserExists(id))
             {
-                userDataServices.DeleteUserFromFile(id);
+                userDataServices.DeleteUser(id);
                 return true;
             }
             else

@@ -10,58 +10,60 @@ namespace TecAlliance.Carpool.Business.Services
     {
 
         /// <summary>
-        /// Converts user to userDto and activates PrintUserInfoToFile-Method
+        /// Creates user with given information
         /// </summary>
         /// <param name="userDto"></param>
         UserDto CreateUser(int id, string username, string firstName, string lastName, int age, string gender, string startPlace, string destination, bool hasCar);
+
         /// <summary>
         /// Creates unique Id for a user
         /// </summary>
         /// <returns></returns>
         int GetId();
+
         /// <summary>
-        /// Checks if user exists, if not, it returns "null"
+        /// Returns true if user exists, if not, it returns false
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
         bool CheckIfUserExists(int id);
 
         /// <summary>
-        /// Activates CreateUserListFromFile and searches for user with specific Id
+        /// Filters the userlist for a user with specific Id and returns the user
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
         UserDto? GetUserById(int id);
 
         /// <summary>
-        /// Activates CreateUserListFromFile and returns the list
+        /// Creates a list with all existing users and returns it
         /// </summary>
         /// <returns></returns>
         List<UserDto> GetAllUsers();
 
         /// <summary>
-        /// Returns a list with all the users having the same destination
+        /// Returns a list with all existing the users having the same destination
         /// </summary>
         /// <param name="destination"></param>
         /// <returns></returns>
         List<ShortUserInfoDto> GetUsersWithSameDestination(string destination);
 
         /// <summary>
-        /// Searches for user with given Id and returns short information about him/her
+        /// Searches for user with given Id and returns short information about the user
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
         ShortUserInfoDto GetShortUserInfo(int id);
 
         /// <summary>
-        /// Updates information about a user
+        /// Updates information about a user with the given information
         /// </summary>
         /// <param name="userDto"></param>
         /// <exception cref="Exception"></exception>
         UserDto UpdateUser(int id, string username, string firstName, string lastName, int age, string gender, string startPlace, string destination, bool hasCar);
 
         /// <summary>
-        /// removes all information from a user
+        /// removes all stored information of a user
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>

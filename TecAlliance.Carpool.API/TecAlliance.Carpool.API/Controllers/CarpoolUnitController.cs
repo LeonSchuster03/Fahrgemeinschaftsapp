@@ -19,6 +19,11 @@ namespace TecAlliance.Carpool.API.Controllers
         /// <summary>
         /// Creates a Carpool
         /// </summary>
+        /// <param name="seatsCount"></param>
+        /// <param name="destination"></param>
+        /// <param name="startLocation"></param>
+        /// <param name="departure"></param>
+        /// <param name="passengers"></param>
         /// <param name="carpoolDto"></param>
         /// <returns>
         /// Returns a newly created carpool
@@ -60,7 +65,7 @@ namespace TecAlliance.Carpool.API.Controllers
         }
 
         /// <summary>
-        /// Returns carpool with specific Id 
+        /// Returns all users in carpool with specific Id 
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>

@@ -14,32 +14,28 @@ namespace TecAlliance.Carpool.Data.Service
     public interface IUserDataServices
     {
         /// <summary>
-        /// Reads file and creates a list of all existing users
+        /// Creates a list with all existing User objects
         /// </summary>
         /// <returns></returns>
-        List<User> CreateUserListFromFile();
-
+        List<User> CreateUserList();
 
         /// <summary>
-        /// Replaces users' old information with the new information
+        /// Replaces a users' old information with the new information
         /// </summary>
         /// <param name="user"></param>
         void UpdateUser(User user);
 
-
         /// <summary>
-        /// Removes user from the file
+        /// removes all stored information about the user with given Id
         /// </summary>
         /// <param name="id"></param>
-        void DeleteUserFromFile(long id);
-
+        void DeleteUser(long id);
 
         /// <summary>
-        /// Prints information of a user to the file
+        /// Adds information to the storage unit
         /// </summary>
         /// <param name="user"></param>
-        void PrintUserInfoToFile(User user);
-
+        void PrintUserInfo(User user);
 
         /// <summary>
         /// filters user with specific Id out of the Userlist

@@ -19,7 +19,7 @@ namespace TecAlliance.Carpool.Data.Tests
             using (File.Create(carpoolUnitDataServices.Path)) { }
             foreach (var carpoolUnit in carpoolUnitList)
             {
-                carpoolUnitDataServices.PrintCarpoolUnitToFile(carpoolUnit);
+                carpoolUnitDataServices.PrintCarpoolUnit(carpoolUnit);
             }
             return carpoolUnitDataServices;
         }
@@ -42,7 +42,7 @@ namespace TecAlliance.Carpool.Data.Tests
             var expected = carpoolUnitList;
 
             //Act
-            var actual = carpoolDataServices.CreateCarpoolUnitListFromFile();
+            var actual = carpoolDataServices.CreateCarpoolUnitList();
 
             //Assert
             actual.Should().BeEquivalentTo(expected);
@@ -60,8 +60,8 @@ namespace TecAlliance.Carpool.Data.Tests
             var expected = carpoolUnitList;
 
             //Act
-            carpoolDataServices.PrintCarpoolUnitToFile(carpoolUnit2);
-            var actual = carpoolDataServices.CreateCarpoolUnitListFromFile();
+            carpoolDataServices.PrintCarpoolUnit(carpoolUnit2);
+            var actual = carpoolDataServices.CreateCarpoolUnitList();
 
             //Assert
             actual.Should().BeEquivalentTo(expected);
@@ -80,8 +80,8 @@ namespace TecAlliance.Carpool.Data.Tests
             var expected = carpoolUnitList;
 
             //Act
-            carpoolDataServices.DeleteCarpoolUnitFromFile(carpoolUnit1.Id);
-            var actual = carpoolDataServices.CreateCarpoolUnitListFromFile();
+            carpoolDataServices.DeleteCarpoolUnit(carpoolUnit1.Id);
+            var actual = carpoolDataServices.CreateCarpoolUnitList();
 
             //Assert
             actual.Should().BeEquivalentTo(expected);
@@ -117,7 +117,7 @@ namespace TecAlliance.Carpool.Data.Tests
 
             //Act
             carpoolUnitDataService.UpdateCarpoolUnit(carpoolUnit1);
-            var actual = carpoolUnitDataService.CreateCarpoolUnitListFromFile();
+            var actual = carpoolUnitDataService.CreateCarpoolUnitList();
 
             //Assert
             actual.Should().BeEquivalentTo(expected);
@@ -133,7 +133,7 @@ namespace TecAlliance.Carpool.Data.Tests
             var expected = new CarpoolUnit(0, 2, "Weikersheim", "Unterbalbach", "7:30", passengers);
 
             //Act
-            var actual = carpoolUnitDataService.BuildCarpoolUnitFromLine("0;2;Weikersheim;Unterbalbach;7:30;1;2");
+            var actual = carpoolUnitDataService.BuildCarpoolUnit("0;2;Weikersheim;Unterbalbach;7:30;1;2");
             
             //Assert
             actual.Should().BeEquivalentTo(expected);
