@@ -24,7 +24,6 @@ namespace TecAlliance.Carpool.Business.Services
         {
             var userDto = new UserDto(id, username, firstName, lastName, age, gender, startPlace, destination, hasCar);
             var user = ConvertUserDtoToUser(userDto);
-            //userDataServices.AddUserToCsv(user);
             userDataServices.PrintUserInfo(user);
             return userDto;
         }
@@ -35,22 +34,7 @@ namespace TecAlliance.Carpool.Business.Services
         /// <returns></returns>
         public int GetId()
         {
-            var userList = userDataServices.CreateUserList();
-            var userWithHighestId = userList.OrderByDescending(user => user.Id).First();
-            int id = userWithHighestId.Id + 1;
-            
-            //do {             
-            //    if (!CheckIfUserExists(id))
-            //    {
-            //        break;
-            //    }
-            //    else
-            //    {
-            //        id++;
-            //    }
-            //} while (true);
-
-            return id;
+            return userDataServices.GetNewId();
         }
         /// <summary>
         /// Checks if user exists, if not, it returns "null"
@@ -59,13 +43,13 @@ namespace TecAlliance.Carpool.Business.Services
         /// <returns></returns>
         public bool CheckIfUserExists(int id)
         {
-            if (userDataServices.FilterUserListForSpecificUser(id) != null)
+            if (userDataServices.GetUserById(id) == null)
             {
-                return true;
+                return false;
             }
             else
             {
-                return false;
+                return true;
             }
         }
 
@@ -75,33 +59,40 @@ namespace TecAlliance.Carpool.Business.Services
         /// <param name="id"></param>
         /// <returns></returns>
         public UserDto? GetUserById(int id)
-        {            
-            List<User> users = userDataServices.CreateUserList();
-            foreach(User user in users)
+        {
+            User user = userDataServices.GetUserById(id);
+            if(user == null)
             {
-                if(user.Id == id)
-                {
-                    UserDto userDto = ConvertUserToUserDto(user); 
-                    return userDto;
-                }
+                return null;
             }
-            return null;                        
+            else
+            {
+                UserDto userDto = ConvertUserToUserDto(user);
+                return userDto;
+            }                        
         }
 
         /// <summary>
         /// Activates CreateUserListFromFile and returns the list
         /// </summary>
         /// <returns></returns>
-        public List<UserDto> GetAllUsers()
+        public List<UserDto>? GetAllUsers()
         {
             List<UserDto> userDtoList = new List<UserDto>();
             List<User> userList = userDataServices.CreateUserList();
-            foreach (User user in userList)
+            if(userList != null)
             {
-                UserDto userDto = ConvertUserToUserDto(user);
-                userDtoList.Add(userDto);
+                foreach (User user in userList)
+                {
+                    UserDto userDto = ConvertUserToUserDto(user);
+                    userDtoList.Add(userDto);
+                }
+                return userDtoList;
             }
-            return userDtoList;
+            else
+            {
+                return null;
+            }           
         }
 
         /// <summary>

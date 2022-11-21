@@ -14,6 +14,12 @@ namespace TecAlliance.Carpool.Data.Service
     public interface IUserDataServices
     {
         /// <summary>
+        /// adds a user to the storage type
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns></returns>
+        User GetUserById(int id);
+        /// <summary>
         /// Creates a list with all existing User objects
         /// </summary>
         /// <returns></returns>
@@ -38,11 +44,17 @@ namespace TecAlliance.Carpool.Data.Service
         void PrintUserInfo(User user);
 
         /// <summary>
+        /// tbd
+        /// </summary>
+        /// <returns></returns>
+        int GetNewId();
+
+        /// <summary>
         /// filters user with specific Id out of the Userlist
         /// </summary>
         /// <param name="id"></param>
-        /// <returns></returns>
-        User FilterUserListForSpecificUser(long id);
+        /// <returns>User object if user exists, otherwise it returns null</returns>
+        User? FilterUserListForSpecificUser(long id);
 
     }
 }

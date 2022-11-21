@@ -19,7 +19,14 @@ namespace TecAlliance.Carpool.API.Controllers
         /// <summary>
         /// Creates a User
         /// </summary>
-        /// <param name="userDto"></param>
+        /// <param name="username"></param>
+        /// <param name="firstName"></param>
+        /// <param name="lastName"></param>
+        /// <param name="age"></param>
+        /// <param name="gender"></param>
+        /// <param name="startPlace"></param>
+        /// <param name="destination"></param>
+        /// <param name="hasCar"></param>
         /// <returns></returns>
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
@@ -90,7 +97,15 @@ namespace TecAlliance.Carpool.API.Controllers
         /// <summary>
         /// Updates information about specific user
         /// </summary>
-        /// <param name="userDto"></param>
+        /// <param name="id"></param>
+        /// <param name="username"></param>
+        /// <param name="firstName"></param>
+        /// <param name="lastName"></param>
+        /// <param name="age"></param>
+        /// <param name="gender"></param>
+        /// <param name="startPlace"></param>
+        /// <param name="destination"></param>
+        /// <param name="hasCar"></param>
         /// <returns></returns>
         [HttpPut("{id}")]
         [ProducesResponseType(StatusCodes.Status202Accepted)]

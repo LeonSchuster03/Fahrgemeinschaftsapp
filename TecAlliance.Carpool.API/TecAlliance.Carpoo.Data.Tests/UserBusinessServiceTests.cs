@@ -115,12 +115,12 @@ namespace TecAlliance.Carpool.Business.Tests
             _service.UpdateUser(0, "Leon", "Leon", "Schuster", 19, "m", "Unterbalbach", "Weikersheim", true);
 
             //Assert
-            _userDataServicesMock.Verify(d => d.UpdateUser(It.IsAny<User>()));
-            _userDataServicesMock.Verify(d => d.UpdateUser(It.Is<User>(u => u.Id == user.Id)));
+            _userDataServicesMock.Verify(d => d.UpdateUser(It.IsAny<User>()), Times.Once);
+            _userDataServicesMock.Verify(d => d.UpdateUser(It.Is<User>(u => u.Id == user.Id)), Times.Once);
         }
 
         [TestMethod]
-        public void Check_UpdateUser_TryWithNotExistingUser()
+        public void Check_UpdateUser_TryWithNonExistingUser()
         {
             //Arrange
             var user = new User(0, "Leon", "Leon", "Schuster", 19, "m", "Unterbalbach", "Weikersheim", true);

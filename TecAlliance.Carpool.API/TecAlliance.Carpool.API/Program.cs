@@ -47,7 +47,7 @@ builder.Services.AddSingleton<ShortUserInfoDtoProvider>();
 builder.Services.AddSwaggerExamplesFromAssemblyOf<ShortUserInfoDtoProvider>();
 
 builder.Services.AddScoped<IUserBusinessServices, UserBusinessServices>();
-builder.Services.AddScoped<IUserDataServices, UserDataServices>();
+builder.Services.AddScoped<IUserDataServices, UserDataServicesDB>();
 
 builder.Services.AddScoped<ICarpoolUnitBusinessServices, CarpoolUnitBusinessServices>();
 builder.Services.AddScoped<ICarpoolUnitDataServices, CarpoolUnitDataServices>();

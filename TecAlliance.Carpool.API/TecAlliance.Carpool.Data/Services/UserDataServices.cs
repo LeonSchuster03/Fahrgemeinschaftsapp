@@ -38,6 +38,22 @@ namespace TecAlliance.Carpool.Data.Service
                 return null;
             }
         }
+        /// <summary>
+        /// tbd
+        /// </summary>
+        /// <returns></returns>
+        public int GetNewId()
+        {
+            return 1;
+        }
+        /// <summary>
+        /// tbd
+        /// </summary>
+        /// <param name="id"></param>
+        public User GetUserById(int id)
+        {
+            return null;
+        }
 
         /// <summary>
         /// Reads file and creates a list of all existing users

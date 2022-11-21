@@ -51,6 +51,7 @@ namespace TecAlliance.Carpool.Business.Services
         {
             List<CarpoolUnitDto>? carpoolUnitDtoList = new List<CarpoolUnitDto>();
             List<CarpoolUnit>? carpoolUnits = carpoolUnitDataServices.CreateCarpoolUnitList();
+            carpoolUnits = null;
             foreach(CarpoolUnit? carpoolUnit in carpoolUnits)
             {
                 CarpoolUnitDto carpoolUnitDto = ConvertCarpoolUnitToCarpoolUnitDto(carpoolUnit);
@@ -190,6 +191,10 @@ namespace TecAlliance.Carpool.Business.Services
             if(CheckIfCarpoolUnitExists(cpId))
             {
                 CarpoolUnitDto carpoolUnitDto = GetCarpoolUnitById(cpId);
+                if(carpoolUnitDto == null)
+                {
+                    return null;
+                }
                 if (carpoolUnitDto.SeatsCount > carpoolUnitDto.Passengers.Count() && !carpoolUnitDto.Passengers.Contains(userId))
                 {
                         carpoolUnitDto.Passengers.Add(userId);
