@@ -17,14 +17,13 @@ namespace TecAlliance.Carpool.API.Controllers
         }
 
         /// <summary>
-        /// Creates a Carpool
+        /// Creates a Carpool, please enter the date and time in (YYYY-MM-DD hh:mm:ss)
         /// </summary>
         /// <param name="seatsCount"></param>
         /// <param name="destination"></param>
         /// <param name="startLocation"></param>
         /// <param name="departure"></param>
         /// <param name="passengers"></param>
-        /// <param name="carpoolDto"></param>
         /// <returns>
         /// Returns a newly created carpool
         /// </returns>
@@ -48,10 +47,8 @@ namespace TecAlliance.Carpool.API.Controllers
             {
                 return businessServices.GetCarpoolUnitById(id);   
             }
-            else
-            {
-                return StatusCode(404);
-            }
+            else return StatusCode(404);
+
         }
 
         /// <summary>
@@ -72,7 +69,7 @@ namespace TecAlliance.Carpool.API.Controllers
         [HttpGet("GetUserInCarpool/{id}")]
         public ActionResult<List<int>>? GetUsersInCarpool(int id)
         {
-            if(businessServices.GetUsersInCarpool(id) != null)
+            if(businessServices.GetCarpoolUnitById(id) != null)
             {
                 return businessServices.GetUsersInCarpool(id);
             }

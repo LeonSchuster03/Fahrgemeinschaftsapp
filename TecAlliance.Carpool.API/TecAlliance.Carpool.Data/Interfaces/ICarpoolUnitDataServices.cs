@@ -40,6 +40,20 @@ namespace TecAlliance.Carpool.Data.Services
         /// <param name="carpoolUnit"></param>
         void UpdateCarpoolUnit(CarpoolUnit carpoolUnit);
 
+        /// <summary>
+        /// tbd
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="carpoolId"></param>
+        void AddPassengerToCarpool(int carpoolId, int userId);
+
+        /// <summary>
+        /// tbd
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="carpoolId"></param>
+        void RemovePassengerFromCarpool(int carpoolId, int userId);
+
 
         /// <summary>
         /// Deletes all information about a carpool
@@ -47,12 +61,19 @@ namespace TecAlliance.Carpool.Data.Services
         /// <param name="id"></param>
         void DeleteCarpoolUnit(int id);
 
+
         /// <summary>
-        /// Returns a CarpoolUnit, by processing the given information
+        /// tbd
         /// </summary>
-        /// <param name="line"></param>
         /// <returns></returns>
-        CarpoolUnit? BuildCarpoolUnit(string line);
+        int GetNewId();
+
+        /// <summary>
+        /// tbd
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        CarpoolUnit GetCarpoolById(int id);
 
     }
 }

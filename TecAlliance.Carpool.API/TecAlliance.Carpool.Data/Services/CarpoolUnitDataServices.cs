@@ -34,6 +34,44 @@ namespace TecAlliance.Carpool.Data.Services
         }
 
         /// <summary>
+        /// tbd
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public CarpoolUnit GetCarpoolById(int id)
+        {
+            return null;
+        }
+
+        /// <summary>
+        /// tbd
+        /// </summary>
+        /// <returns></returns>
+        public int GetNewId()
+        {
+            return 1;
+        }
+
+        /// <summary>
+        /// tbd
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="carpoolId"></param>
+        public void AddPassengerToCarpool(int carpoolId, int userId)
+        {
+            
+        }
+
+        /// <summary>
+        /// tbd
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="carpoolId"></param>
+        public void RemovePassengerFromCarpool(int carpoolId, int userId)
+        {
+
+        }
+        /// <summary>
         /// Takes the id and searches the carpoollist for a carpool with this id
         /// </summary>
         /// <param name="id"></param>
@@ -77,7 +115,7 @@ namespace TecAlliance.Carpool.Data.Services
 
             foreach(string carpoolUnitText in fileText)
             {
-                CarpoolUnit carpoolUnit = BuildCarpoolUnit(carpoolUnitText);
+                CarpoolUnit carpoolUnit = BuildCarpoolUnit(1/*carpoolUnitText*/);
                 carpoolList.Add(carpoolUnit);
             }
             return carpoolList;
@@ -118,8 +156,9 @@ namespace TecAlliance.Carpool.Data.Services
         /// </summary>
         /// <param name="line"></param>
         /// <returns></returns>
-        public CarpoolUnit? BuildCarpoolUnit(string line)
+        public CarpoolUnit? BuildCarpoolUnit(int id)
         {
+            string line = id.ToString();
             if(line != null)
             {
                 string[] info = line.Split(";");

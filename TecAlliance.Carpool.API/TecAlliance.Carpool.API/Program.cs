@@ -50,7 +50,7 @@ builder.Services.AddScoped<IUserBusinessServices, UserBusinessServices>();
 builder.Services.AddScoped<IUserDataServices, UserDataServicesDB>();
 
 builder.Services.AddScoped<ICarpoolUnitBusinessServices, CarpoolUnitBusinessServices>();
-builder.Services.AddScoped<ICarpoolUnitDataServices, CarpoolUnitDataServices>();
+builder.Services.AddScoped<ICarpoolUnitDataServices, CarpoolUnitDataServicesDB>();
 
 var app = builder.Build();
 

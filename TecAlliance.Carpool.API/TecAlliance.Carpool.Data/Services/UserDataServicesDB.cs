@@ -73,20 +73,14 @@ namespace TecAlliance.Carpool.Data.Service
                         user = new User(id, username, firstName, lastName, age, endPlace, startPlace, endPlace, hasCar);
                         connection.Close();
                         return user;
-                    }
-                    
-                }
-            
-                
+                    }                    
+                }                            
             }
             catch
             {
                 return null;
             }
             return null;*/
-
-
-
             List<User> userList = new List<User>();
             using (SqlConnection connection = new SqlConnection(ConnectionString))
             {
